@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import './App.css'
 import VehicleDetailPage from './pages/VehicleDetailPage'
@@ -18,7 +18,7 @@ const stats = [
 ]
 
 const inventory = [
-  { id: 1, slug: '2017-gmc-terrain-awd-sle', coverImage: '/2017%20GMC%20terrain/portada.jpg', model: '2017 GMC Terrain AWD SLE', price: '$7,800 Cash', miles: '104,700 mi', fuel: 'Gasoline' },
+  { id: 1, slug: '2017-gmc-terrain-awd-sle', coverImage: '/2017-gmc-terrain-awd-sle/hero-front.jpg', model: '2017 GMC Terrain AWD SLE', price: '$7,800 Cash', miles: '104,700 mi', fuel: 'Gasoline' },
   { id: 2, model: '2022 Honda Accord Sport', price: '$23,600', miles: '28,120 mi', fuel: 'Gasoline' },
   { id: 3, model: '2021 Ford F-150 XLT', price: '$34,500', miles: '33,800 mi', fuel: 'Gasoline' },
   { id: 4, model: '2023 Hyundai Tucson SEL', price: '$27,300', miles: '18,905 mi', fuel: 'Gasoline' },
@@ -113,6 +113,17 @@ function IconStar({ className = '' }) {
 
 function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    const savedScroll = sessionStorage.getItem('inventoryScrollY')
+
+    if (savedScroll) {
+      window.requestAnimationFrame(() => {
+        window.scrollTo({ top: Number(savedScroll), behavior: 'auto' })
+      })
+      sessionStorage.removeItem('inventoryScrollY')
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden">
@@ -280,7 +291,11 @@ function HomePage() {
                       </div>
                     </div>
                     {car.slug ? (
-                      <Link to={`/inventory/${car.slug}`} className="cta-primary mt-5 inline-flex w-full justify-center rounded-xl px-4 py-2.5 text-sm font-bold">
+                      <Link
+                        to={`/inventory/${car.slug}`}
+                        onClick={() => sessionStorage.setItem('inventoryScrollY', String(window.scrollY))}
+                        className="cta-primary mt-5 inline-flex w-full justify-center rounded-xl px-4 py-2.5 text-sm font-bold"
+                      >
                         View Vehicle Details
                       </Link>
                     ) : (

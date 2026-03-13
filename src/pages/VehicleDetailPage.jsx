@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { terrain2017 } from '../data/vehicles'
 
@@ -10,6 +10,10 @@ function VehicleDetailPage() {
   const { slug } = useParams()
   const vehicle = useMemo(() => vehiclesBySlug[slug], [slug])
   const [activeImage, setActiveImage] = useState(vehicle?.coverImage || '')
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [slug])
 
   if (!vehicle) {
     return <Navigate to="/" replace />
@@ -26,7 +30,7 @@ function VehicleDetailPage() {
               <p className="text-xs font-semibold tracking-[0.12em] text-blue-700">AUTO SALES</p>
             </div>
           </Link>
-          <Link to="/#inventory" className="cta-secondary rounded-full px-4 py-2 text-sm font-bold">
+          <Link to="/" className="cta-secondary rounded-full px-4 py-2 text-sm font-bold">
             Back To Inventory
           </Link>
         </div>
