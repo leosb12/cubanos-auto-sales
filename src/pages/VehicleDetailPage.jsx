@@ -22,6 +22,36 @@ function VehicleDetailPage() {
     window.scrollTo({ top: 0, behavior: 'auto' })
   }, [slug])
 
+  useEffect(() => {
+    const animatedElements = document.querySelectorAll(
+      '.reveal, .section-title-pop, .section-ambient, .stars-twinkle, .map-card-pop'
+    )
+
+    if (!('IntersectionObserver' in window)) {
+      animatedElements.forEach((element) => element.classList.add('in-view'))
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.2,
+        rootMargin: '0px 0px -8% 0px',
+      }
+    )
+
+    animatedElements.forEach((element) => observer.observe(element))
+
+    return () => observer.disconnect()
+  }, [slug])
+
   if (!vehicle) {
     return <Navigate to="/" replace />
   }

@@ -1,7 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import './App.css'
 import VehicleDetailPage from './pages/VehicleDetailPage'
+import {
+  altima2017,
+  buickEnvision2019,
+  enclave2017,
+  escape2016,
+  impala2017,
+  malibu2018,
+  terrain2017,
+  terrainAzul2017,
+} from './data/vehicles'
 
 const menu = [
   { label: 'Inventory', href: '#inventory' },
@@ -17,16 +27,46 @@ const stats = [
   { value: '12+', label: 'Years in Bowling Green' },
 ]
 
+const parseMoney = (value) => Number(String(value || '').replace(/[^\d.]/g, ''))
+
+const parseMiles = (value) => Number(String(value || '').replace(/[^\d]/g, ''))
+
+const extractYear = (model) => {
+  const match = String(model || '').match(/\b(19|20)\d{2}\b/)
+  return match ? Number(match[0]) : null
+}
+
+const inferBodyType = (model) => {
+  const text = String(model || '').toLowerCase()
+
+  if (/(terrain|escape|envision|enclave|suv)/.test(text)) {
+    return 'SUV'
+  }
+
+  if (/(impala|malibu|altima|sedan)/.test(text)) {
+    return 'Sedan'
+  }
+
+  return 'Other'
+}
+
 const inventory = [
-  { id: 1, slug: '2017-gmc-terrain-awd-sle', coverImage: '/2017-gmc-terrain-awd-sle/hero-front.jpg', model: '2017 GMC Terrain AWD SLE', price: '$7,800 Cash', miles: '104,700 mi', fuel: 'Gasoline' },
-  { id: 2, slug: '2017-chevrolet-impala-lt', coverImage: '/2017-chevrolet-impala-lt/hero-front.jpg', model: '2017 Chevrolet Impala LT', price: '$7,500 Cash', miles: '115,200 mi', fuel: 'Gasoline' },
-  { id: 3, slug: '2018-chevrolet-malibu-ls', coverImage: '/2018-chevrolet-malibu-ls/hero-front.jpg', model: '2018 Chevrolet Malibu', price: '$8,750 Cash', miles: '92,500 mi', fuel: 'Gasoline' },
-  { id: 4, slug: '2017-gmc-terrain-azul', coverImage: '/2017-gmc-terrain-azul/hero-front.jpg', model: '2017 GMC Terrain V6', price: '$9,250 Cash', miles: '43,000 mi', fuel: 'Gasoline' },
-  { id: 5, slug: '2016-ford-escape-se', coverImage: '/2016-ford-escape-se/front-view.jpg', model: '2016 Ford Escape SE 1.6L', price: '$6,399 Cash', miles: '116,438 mi', fuel: 'Gasoline' },
-  { id: 6, slug: '2019-buick-envision-essence', coverImage: '/2019-buick-envision-essence/front-view.jpg', model: '2019 Buick Envision FWD Essence', price: '$9,999 Cash', miles: '91,805 mi', fuel: 'Gasoline' },
-  { id: 7, slug: '2017-buick-enclave-leather', coverImage: '/2017-buick-enclave-leather/hero-front.jpg', model: '2017 Buick Enclave Leather', price: '$9,999 Cash', miles: '101,282 mi', fuel: 'Gasoline' },
-  { id: 8, slug: '2017-nissan-altima-25', coverImage: '/2017-nissan-altima-25/portada.jpg', model: '2017 Nissan Altima 2.5L', price: '$6,699 Cash', miles: '93,255 mi', fuel: 'Gasoline' },
-]
+  terrain2017,
+  impala2017,
+  malibu2018,
+  terrainAzul2017,
+  escape2016,
+  buickEnvision2019,
+  enclave2017,
+  altima2017,
+].map((vehicle) => ({
+  ...vehicle,
+  year: extractYear(vehicle.model),
+  bodyType: inferBodyType(vehicle.model),
+  normalizedTitle: String(vehicle.title || '').toLowerCase().includes('clean') ? 'clean' : 'rebuilt',
+  priceValue: parseMoney(vehicle.price),
+  milesValue: parseMiles(vehicle.miles),
+}))
 
 const benefits = [
   {
@@ -60,19 +100,28 @@ const heritage = [
 
 const testimonials = [
   {
-    name: 'Daniel Reyes',
-    quote:
-      'Fast process, clear numbers, no pressure. This is exactly how buying a car should feel.',
+    name: 'Michelle',
+    date: 'March 5, 2026',
+    highlights: 'Price - Item Description',
+    quote: 'Great vehicle and price. Pleasant to work with. Thank you so much!',
   },
   {
-    name: 'Martha Rodriguez',
-    quote:
-      'Great team and great inventory. I got the car I wanted at a fair monthly payment.',
+    name: 'Lon',
+    date: 'January 15, 2026',
+    highlights: 'Punctuality - Communication - Price - Item Description',
+    quote: 'Easy to do business with. Would not hesitate to buy another car from them.',
   },
   {
-    name: 'Kevin Soto',
-    quote:
-      'Professional from start to finish. Communication was excellent and everything was transparent.',
+    name: 'Danielle',
+    date: 'December 2, 2025',
+    highlights: 'Punctuality - Communication - Price - Item Description',
+    quote: 'These guys were very friendly and quick responding. The vehicle was just as described and was sold to me at a fair price. They even changed my oil for me. Highly recommend.',
+  },
+  {
+    name: 'Kamilla',
+    date: 'October 8, 2025',
+    highlights: 'Price - Item Description',
+    quote: 'Good quick responses and good vehicle at a great price. Easy purchase.',
   },
 ]
 
@@ -115,6 +164,82 @@ function IconStar({ className = '' }) {
 
 function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [titleFilter, setTitleFilter] = useState('all')
+  const [fuelFilter, setFuelFilter] = useState('all')
+  const [drivetrainFilter, setDrivetrainFilter] = useState('all')
+  const [bodyTypeFilter, setBodyTypeFilter] = useState('all')
+  const [yearFrom, setYearFrom] = useState('all')
+  const [yearTo, setYearTo] = useState('all')
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+  const [maxMiles, setMaxMiles] = useState('')
+
+  const fuelOptions = useMemo(() => [...new Set(inventory.map((car) => car.fuel).filter(Boolean))].sort(), [])
+  const drivetrainOptions = useMemo(() => [...new Set(inventory.map((car) => car.drivetrain).filter(Boolean))].sort(), [])
+  const bodyTypeOptions = useMemo(() => [...new Set(inventory.map((car) => car.bodyType).filter(Boolean))].sort(), [])
+  const yearOptions = useMemo(() => [...new Set(inventory.map((car) => car.year).filter(Boolean))].sort((a, b) => a - b), [])
+
+  const filteredInventory = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    const minPriceValue = minPrice ? Number(minPrice) : null
+    const maxPriceValue = maxPrice ? Number(maxPrice) : null
+    const maxMilesValue = maxMiles ? Number(maxMiles) : null
+    const yearFromValue = yearFrom !== 'all' ? Number(yearFrom) : null
+    const yearToValue = yearTo !== 'all' ? Number(yearTo) : null
+
+    return inventory.filter((car) => {
+      const matchesSearch = !query || car.model.toLowerCase().includes(query)
+      const matchesTitle = titleFilter === 'all' || car.normalizedTitle === titleFilter
+      const matchesFuel = fuelFilter === 'all' || car.fuel === fuelFilter
+      const matchesDrivetrain = drivetrainFilter === 'all' || car.drivetrain === drivetrainFilter
+      const matchesBodyType = bodyTypeFilter === 'all' || car.bodyType === bodyTypeFilter
+      const matchesMinPrice = minPriceValue === null || car.priceValue >= minPriceValue
+      const matchesMaxPrice = maxPriceValue === null || car.priceValue <= maxPriceValue
+      const matchesMaxMiles = maxMilesValue === null || car.milesValue <= maxMilesValue
+      const matchesYearFrom = yearFromValue === null || (car.year !== null && car.year >= yearFromValue)
+      const matchesYearTo = yearToValue === null || (car.year !== null && car.year <= yearToValue)
+
+      return (
+        matchesSearch &&
+        matchesTitle &&
+        matchesFuel &&
+        matchesDrivetrain &&
+        matchesBodyType &&
+        matchesMinPrice &&
+        matchesMaxPrice &&
+        matchesMaxMiles &&
+        matchesYearFrom &&
+        matchesYearTo
+      )
+    })
+  }, [searchQuery, titleFilter, fuelFilter, drivetrainFilter, bodyTypeFilter, minPrice, maxPrice, maxMiles, yearFrom, yearTo])
+
+  const hasActiveFilters =
+    searchQuery.trim() !== '' ||
+    titleFilter !== 'all' ||
+    fuelFilter !== 'all' ||
+    drivetrainFilter !== 'all' ||
+    bodyTypeFilter !== 'all' ||
+    yearFrom !== 'all' ||
+    yearTo !== 'all' ||
+    minPrice !== '' ||
+    maxPrice !== '' ||
+    maxMiles !== ''
+
+  const resetFilters = () => {
+    setSearchQuery('')
+    setTitleFilter('all')
+    setFuelFilter('all')
+    setDrivetrainFilter('all')
+    setBodyTypeFilter('all')
+    setYearFrom('all')
+    setYearTo('all')
+    setMinPrice('')
+    setMaxPrice('')
+    setMaxMiles('')
+  }
 
   useEffect(() => {
     const savedScroll = sessionStorage.getItem('inventoryScrollY')
@@ -125,6 +250,36 @@ function HomePage() {
       })
       sessionStorage.removeItem('inventoryScrollY')
     }
+  }, [])
+
+  useEffect(() => {
+    const animatedElements = document.querySelectorAll(
+      '.reveal, .section-title-pop, .section-ambient, .stars-twinkle, .map-card-pop'
+    )
+
+    if (!('IntersectionObserver' in window)) {
+      animatedElements.forEach((element) => element.classList.add('in-view'))
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.2,
+        rootMargin: '0px 0px -8% 0px',
+      }
+    )
+
+    animatedElements.forEach((element) => observer.observe(element))
+
+    return () => observer.disconnect()
   }, [])
 
   return (
@@ -251,28 +406,200 @@ function HomePage() {
           </div>
         </section>
 
-        <section id="inventory" className="py-16 sm:py-20 bg-gradient-to-b from-slate-50 to-white">
+        <section id="inventory" className="section-ambient py-16 sm:py-20 bg-gradient-to-b from-slate-50 to-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-10 flex items-end justify-between gap-6">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">Inventory</p>
-                <h2 className="font-display text-5xl leading-none text-slate-950 sm:text-6xl">Available Vehicles</h2>
+                <h2 className="section-title-pop font-display text-5xl leading-none text-slate-950 sm:text-6xl">Available Vehicles</h2>
               </div>
               <a href="#contact" className="cta-secondary hidden rounded-full px-5 py-2.5 text-sm font-bold sm:inline-flex">
                 Request Full List
               </a>
             </div>
 
+            <div className="card-kinetic mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-300/15 sm:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-[0.1em] text-slate-700">Filter Inventory</p>
+                  <p className="text-sm font-semibold text-slate-600">{filteredInventory.length} vehicles found</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFiltersOpen((prev) => !prev)}
+                    aria-expanded={filtersOpen}
+                    aria-controls="inventory-filters-panel"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:bg-slate-100"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+                      <path d="M4 6h16l-6.2 7.2v4.4l-3.6 1.8v-6.2L4 6z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {filtersOpen ? 'Hide Filters' : 'Show Filters'}
+                    <svg viewBox="0 0 24 24" className={`h-4 w-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} fill="none" aria-hidden="true">
+                      <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+
+                  {hasActiveFilters && (
+                    <button
+                      type="button"
+                      onClick={resetFilters}
+                      className="rounded-full border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:bg-slate-100"
+                    >
+                      Clear Filters
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div
+                id="inventory-filters-panel"
+                className={`grid grid-cols-1 gap-3 transition-all duration-300 sm:grid-cols-2 xl:grid-cols-4 ${filtersOpen ? 'mt-4 opacity-100' : 'pointer-events-none mt-0 max-h-0 overflow-hidden opacity-0'}`}
+              >
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Search Model
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder="Example: Envision"
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Title Status
+                  <select
+                    value={titleFilter}
+                    onChange={(event) => setTitleFilter(event.target.value)}
+                    className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  >
+                    <option value="all">All Titles</option>
+                    <option value="clean">Clean Title</option>
+                    <option value="rebuilt">Rebuilt Title</option>
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Body Type
+                  <select
+                    value={bodyTypeFilter}
+                    onChange={(event) => setBodyTypeFilter(event.target.value)}
+                    className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  >
+                    <option value="all">All Body Types</option>
+                    {bodyTypeOptions.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Fuel Type
+                  <select
+                    value={fuelFilter}
+                    onChange={(event) => setFuelFilter(event.target.value)}
+                    className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  >
+                    <option value="all">All Fuel Types</option>
+                    {fuelOptions.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Drivetrain
+                  <select
+                    value={drivetrainFilter}
+                    onChange={(event) => setDrivetrainFilter(event.target.value)}
+                    className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  >
+                    <option value="all">All Drivetrains</option>
+                    {drivetrainOptions.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Year From
+                  <select
+                    value={yearFrom}
+                    onChange={(event) => setYearFrom(event.target.value)}
+                    className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  >
+                    <option value="all">Any Year</option>
+                    {yearOptions.map((year) => (
+                      <option key={`from-${year}`} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Year To
+                  <select
+                    value={yearTo}
+                    onChange={(event) => setYearTo(event.target.value)}
+                    className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  >
+                    <option value="all">Any Year</option>
+                    {yearOptions.map((year) => (
+                      <option key={`to-${year}`} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Min Price ($)
+                  <input
+                    type="number"
+                    min="0"
+                    value={minPrice}
+                    onChange={(event) => setMinPrice(event.target.value)}
+                    placeholder="0"
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Max Price ($)
+                  <input
+                    type="number"
+                    min="0"
+                    value={maxPrice}
+                    onChange={(event) => setMaxPrice(event.target.value)}
+                    placeholder="20000"
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Max Mileage
+                  <input
+                    type="number"
+                    min="0"
+                    value={maxMiles}
+                    onChange={(event) => setMaxMiles(event.target.value)}
+                    placeholder="120000"
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
+                  />
+                </label>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {inventory.map((car, index) => (
-                <article key={car.id} className={`reveal cuba-accent-border overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-300/20 ${index % 3 === 1 ? 'reveal-delay-1' : index % 3 === 2 ? 'reveal-delay-2' : ''}`}>
+              {filteredInventory.map((car, index) => (
+                <article key={car.id} className={`reveal card-kinetic cuba-accent-border overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-300/20 ${index % 3 === 1 ? 'reveal-delay-1' : index % 3 === 2 ? 'reveal-delay-2' : ''}`}>
                   <div className="relative h-44 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white">
                     {car.coverImage && (
                       <img src={car.coverImage} alt={`${car.model} portada`} className="absolute inset-0 h-full w-full object-cover" />
                     )}
                     <div className="absolute inset-0 bg-slate-950/40" aria-hidden="true"></div>
                     <div className="relative z-10 flex items-center justify-between">
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue-200">Certified Unit</p>
+                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue-200">{car.title}</p>
                       <IconCar className="h-6 w-6" />
                     </div>
                     <h3 className="relative z-10 mt-6 text-2xl font-bold leading-tight">{car.model}</h3>
@@ -309,22 +636,29 @@ function HomePage() {
                 </article>
               ))}
             </div>
+
+            {filteredInventory.length === 0 && (
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-lg shadow-slate-300/15">
+                <p className="text-lg font-bold text-slate-900">No vehicles match your current filters.</p>
+                <p className="mt-2 text-sm text-slate-600">Try adjusting title, price range, mileage, or model search.</p>
+              </div>
+            )}
           </div>
         </section>
 
         <section id="financing" className="border-y border-slate-200 bg-white py-16 sm:py-20">
           <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
-            <div className="reveal cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <div className="reveal card-kinetic cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
               <IconBank className="h-9 w-9 text-blue-700" />
               <h3 className="mt-4 text-xl font-bold text-slate-900">Financing Support</h3>
               <p className="mt-2 text-slate-600">From first-time buyers to rebuild credit cases, we guide your approval process step by step.</p>
             </div>
-            <div className="reveal reveal-delay-1 cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <div className="reveal reveal-delay-1 card-kinetic cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
               <IconShield className="h-9 w-9 text-red-600" />
               <h3 className="mt-4 text-xl font-bold text-slate-900">Verified Vehicle History</h3>
               <p className="mt-2 text-slate-600">Transparent records and straightforward paperwork so every decision is informed.</p>
             </div>
-            <div className="reveal reveal-delay-2 cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <div className="reveal reveal-delay-2 card-kinetic cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
               <IconCar className="h-9 w-9 text-slate-900" />
               <h3 className="mt-4 text-xl font-bold text-slate-900">Trade-In Ready</h3>
               <p className="mt-2 text-slate-600">Bring your current car for appraisal and reduce your upfront cost immediately.</p>
@@ -338,7 +672,7 @@ function HomePage() {
             <div className="relative z-10 mb-10 grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="max-w-3xl">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-600">Cuban Design Language</p>
-                <h2 className="font-display text-5xl leading-none text-slate-950 sm:text-6xl">Cuban Identity, Clean Execution</h2>
+                <h2 className="section-title-pop font-display text-5xl leading-none text-slate-950 sm:text-6xl">Cuban Identity, Clean Execution</h2>
                 <p className="mt-4 text-slate-700">
                   The visual system is inspired by the Cuban flag and modernized for a premium auto sales brand. Strong colors, clear hierarchy, and refined spacing.
                 </p>
@@ -352,7 +686,7 @@ function HomePage() {
             </div>
             <div className="relative z-10 grid gap-6 md:grid-cols-3">
               {heritage.map((item, idx) => (
-                <article key={item.title} className={`reveal rounded-2xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-300/20 ${idx === 1 ? 'reveal-delay-1' : idx === 2 ? 'reveal-delay-2' : ''}`}>
+                <article key={item.title} className={`reveal card-kinetic rounded-2xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-300/20 ${idx === 1 ? 'reveal-delay-1' : idx === 2 ? 'reveal-delay-2' : ''}`}>
                   <div className="mb-4 inline-flex rounded-xl bg-red-50 p-2 text-red-600">
                     <IconStar className="h-5 w-5" />
                   </div>
@@ -364,62 +698,136 @@ function HomePage() {
           </div>
         </section>
 
-        <section id="why-us" className="cuba-night py-16 text-white sm:py-20">
+        <section id="why-us" className="section-ambient cuba-night py-16 text-white sm:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-10 max-w-2xl">
+            <div className="mb-10 text-center">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-300">Why Cubanos</p>
-              <h2 className="font-display text-5xl leading-none sm:text-6xl">Built on Trust, Driven by Results</h2>
+              <h2 className="section-title-pop font-display text-5xl leading-none sm:text-6xl">Built on Trust, Driven by Results</h2>
             </div>
-            <div className="grid gap-6 md:grid-cols-3">
-              {benefits.map((item, idx) => (
-                <article key={item.title} className={`reveal rounded-2xl border border-white/10 bg-white/5 p-6 ${idx === 1 ? 'reveal-delay-1' : idx === 2 ? 'reveal-delay-2' : ''}`}>
-                  <h3 className="text-xl font-bold">{item.title}</h3>
-                  <p className="mt-3 text-slate-300">{item.text}</p>
-                </article>
-              ))}
+
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+              <aside className="reveal card-kinetic overflow-hidden rounded-3xl border border-white/15 bg-white/5 shadow-xl shadow-slate-950/35">
+                <div className="relative h-full min-h-[320px] sm:min-h-[420px]">
+                  <img
+                    src="/cubanos%20sales.jpg"
+                    alt="Cubanos Auto Sales storefront in Bowling Green"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/35 to-transparent" aria-hidden="true"></div>
+                  <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue-200">Our Location</p>
+                    <p className="mt-2 text-2xl font-extrabold leading-tight">Visit Our Dealership</p>
+                    <p className="mt-1 text-sm text-slate-200">1054 Old Barren River Rd Bay 7, Bowling Green, KY</p>
+                  </div>
+                </div>
+              </aside>
+
+              <div className="reveal reveal-delay-1 card-kinetic rounded-3xl border border-white/15 bg-white/5 p-5 sm:p-7 shadow-xl shadow-slate-950/35">
+                <p className="text-sm font-semibold text-slate-200">
+                  We combine transparent numbers, real communication, and local service so every buyer feels confident from the first visit.
+                </p>
+
+                <div className="mt-5 grid gap-4">
+                  {benefits.map((item, idx) => (
+                    <article key={item.title} className={`card-kinetic rounded-2xl border border-white/10 bg-white/5 p-5 ${idx === 1 ? 'reveal-delay-1' : idx === 2 ? 'reveal-delay-2' : ''}`}>
+                      <h3 className="text-lg font-bold">{item.title}</h3>
+                      <p className="mt-2 text-sm text-slate-300">{item.text}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         <section className="bg-white py-16 sm:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="font-display text-5xl leading-none text-slate-950 sm:text-6xl">What Buyers Say</h2>
-            <div className="mt-8 grid gap-6 md:grid-cols-3">
+            <h2 className="section-title-pop font-display text-5xl leading-none text-slate-950 sm:text-6xl">What Buyers Say</h2>
+            <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
               {testimonials.map((item, idx) => (
-                <blockquote key={item.name} className={`reveal rounded-2xl border border-slate-200 bg-slate-50 p-6 ${idx === 1 ? 'reveal-delay-1' : idx === 2 ? 'reveal-delay-2' : ''}`}>
-                  <p className="text-slate-700">"{item.quote}"</p>
-                  <footer className="mt-4 text-sm font-bold uppercase tracking-[0.1em] text-slate-900">{item.name}</footer>
+                <blockquote key={item.name} className={`reveal card-kinetic review-card rounded-2xl border border-slate-200 bg-slate-50 p-6 ${idx === 1 ? 'reveal-delay-1' : idx === 2 ? 'reveal-delay-2' : ''}`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-2xl font-bold text-slate-900">{item.name}</p>
+                      <p className="text-sm text-slate-500">{item.date}</p>
+                    </div>
+                  </div>
+
+                  <div className="stars-twinkle mt-3 flex items-center gap-1 text-amber-500">
+                    <IconStar className="h-4 w-4" />
+                    <IconStar className="h-4 w-4" />
+                    <IconStar className="h-4 w-4" />
+                    <IconStar className="h-4 w-4" />
+                    <IconStar className="h-4 w-4" />
+                  </div>
+
+                  <p className="mt-3 text-slate-500"><span className="font-semibold text-slate-600">Highlights:</span> {item.highlights}</p>
+                  <p className="mt-3 text-slate-700">{item.quote}</p>
                 </blockquote>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="contact" className="relative overflow-hidden border-t border-slate-200 bg-slate-100 py-16 sm:py-20">
-          <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-            <div className="reveal">
+        <section id="contact" className="section-ambient relative overflow-hidden border-t border-slate-200 bg-gradient-to-b from-slate-100 via-white to-slate-100 py-16 sm:py-20">
+          <div className="mx-auto grid max-w-7xl items-stretch gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8">
+            <section className="reveal card-kinetic flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-300/20 sm:p-8">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">Visit Us</p>
-              <h2 className="font-display text-5xl leading-none text-slate-950 sm:text-6xl">Let us find your next car</h2>
-              <div className="mt-6 space-y-4 text-slate-700">
-                <p><span className="font-bold text-slate-900">Location:</span> 1054 Old Barren River Rd Bay 7, Bowling Green, KY</p>
-                <p><span className="font-bold text-slate-900">Phone:</span> <a href="tel:+12705991187" className="font-semibold text-blue-700">270-599-1187</a></p>
-                <p><span className="font-bold text-slate-900">Email:</span> <a href="mailto:sales@cubanosautosales.com" className="font-semibold text-blue-700">sales@cubanosautosales.com</a></p>
-                <p><span className="font-bold text-slate-900">Hours:</span> Mon - Sat 9:00 AM to 6:00 PM</p>
-              </div>
-            </div>
+              <h2 className="section-title-pop font-display text-5xl leading-none text-slate-950 sm:text-6xl">Let us find your next car</h2>
 
-            <form className="reveal reveal-delay-1 rounded-2xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-300/20">
-              <h3 className="text-xl font-bold text-slate-900">Request a Call Back</h3>
-              <div className="mt-5 space-y-4">
-                <input type="text" placeholder="Full Name" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-700" />
-                <input type="email" placeholder="Email Address" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-700" />
-                <input type="tel" placeholder="Phone Number" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-700" />
-                <textarea rows="4" placeholder="Tell us what vehicle you are looking for" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-700"></textarea>
+              <div className="mt-6 space-y-4 text-slate-700">
+                <p><span className="font-bold text-slate-900">Location:</span> 1054 Old Barren River Rd #7, Bowling Green, KY 42101, United States</p>
+                <p><span className="font-bold text-slate-900">Phone:</span> <a href="tel:+12705991187" className="font-semibold text-blue-700">270-599-1187</a></p>
               </div>
-              <button type="submit" className="cta-primary mt-5 w-full rounded-xl px-4 py-3 text-sm font-bold shadow-lg shadow-blue-900/20">
-                Send Request
-              </button>
-            </form>
+
+              <div className="mt-6">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-blue-700">Business Hours</p>
+                <ul className="mt-3 space-y-2 text-sm sm:text-base">
+                  <li className="flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2"><span className="font-semibold text-slate-900">Monday</span><span>9:00 AM - 5:30 PM</span></li>
+                  <li className="flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2"><span className="font-semibold text-slate-900">Tuesday</span><span>9:00 AM - 5:30 PM</span></li>
+                  <li className="flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2"><span className="font-semibold text-slate-900">Wednesday</span><span>9:00 AM - 5:30 PM</span></li>
+                  <li className="flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2"><span className="font-semibold text-slate-900">Thursday</span><span>8:00 AM - 5:30 PM</span></li>
+                  <li className="flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2"><span className="font-semibold text-slate-900">Friday</span><span>9:00 AM - 5:30 PM</span></li>
+                  <li className="flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2"><span className="font-semibold text-slate-900">Saturday</span><span>9:00 AM - 5:30 PM</span></li>
+                  <li className="flex items-center justify-between rounded-xl bg-red-50 px-3 py-2 text-red-800"><span className="font-semibold">Sunday</span><span>Closed</span></li>
+                </ul>
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=1054+Old+Barren+River+Rd+%237,+Bowling+Green,+KY+42101,+United+States"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="cta-secondary rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em]"
+                >
+                  Open In Google Maps
+                </a>
+                <a
+                  href="https://www.google.com/maps/dir/?api=1&destination=1054+Old+Barren+River+Rd+%237,+Bowling+Green,+KY+42101,+United+States"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:bg-slate-100"
+                >
+                  Get Directions
+                </a>
+              </div>
+            </section>
+
+            <section className="reveal reveal-delay-1 map-card-pop flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-300/20">
+              <div className="bg-slate-900 px-6 py-4 text-white">
+                <h3 className="text-xl font-bold">Cubanos Auto Sales &amp; Repair LLC</h3>
+                <p className="mt-1 text-sm text-slate-300">Visit us in Bowling Green, KY</p>
+              </div>
+              <div className="min-h-[420px] flex-1 border-t border-slate-200">
+                <iframe
+                  title="Cubanos Auto Sales & Repair LLC on Google Maps"
+                  src="https://www.google.com/maps?q=Cubanos+Auto+Sales+%26+Repair+LLC,+Bowling+Green,+KY&z=17&output=embed"
+                  className="h-full w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </section>
           </div>
         </section>
       </main>

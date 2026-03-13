@@ -279,24 +279,159 @@ body {
 	border: 1px solid #1e3a8a;
 	background: #1d4ed8;
 	color: #ffffff;
-	transition: transform 180ms ease, background-color 180ms ease;
+	transition: transform 180ms ease, background-color 180ms ease, box-shadow 220ms ease;
 }
 
 .cta-primary:hover {
 	background: #1e40af;
 	transform: translateY(-1px);
+	box-shadow: 0 12px 24px rgba(29, 78, 216, 0.34);
 }
 
 .cta-secondary {
 	border: 1px solid #1e40af;
 	background: #ffffff;
 	color: #1e3a8a;
-	transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
+	transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 220ms ease;
 }
 
 .cta-secondary:hover {
 	background: #eff6ff;
 	transform: translateY(-1px);
+	box-shadow: 0 10px 20px rgba(30, 64, 175, 0.2);
+}
+
+.section-ambient {
+	position: relative;
+	isolation: isolate;
+}
+
+.section-ambient::before,
+.section-ambient::after {
+	content: '';
+	position: absolute;
+	border-radius: 999px;
+	filter: blur(34px);
+	opacity: 0.24;
+	pointer-events: none;
+	z-index: -1;
+	animation-play-state: paused;
+}
+
+.section-ambient::before {
+	height: 210px;
+	width: 210px;
+	left: -70px;
+	top: 30px;
+	background: rgba(0, 80, 200, 0.35);
+}
+
+.section-ambient::after {
+	height: 260px;
+	width: 260px;
+	right: -90px;
+	bottom: 20px;
+	background: rgba(214, 40, 40, 0.22);
+	animation-delay: 1.2s;
+}
+
+.section-ambient.in-view::before,
+.section-ambient.in-view::after {
+	animation: ambientDrift 10s ease-in-out infinite alternate;
+	animation-play-state: running;
+}
+
+.section-title-pop {
+	position: relative;
+	display: inline-block;
+	text-wrap: balance;
+}
+
+.section-title-pop::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: -8px;
+	height: 4px;
+	width: min(220px, 70%);
+	border-radius: 999px;
+	background: linear-gradient(90deg, rgba(0, 80, 200, 0.95), rgba(214, 40, 40, 0.88));
+	transform-origin: left;
+	transform: scaleX(0);
+	opacity: 0;
+}
+
+.section-title-pop.in-view::after {
+	animation: titleBeam 1.3s ease-out forwards;
+}
+
+.card-kinetic {
+	transition: transform 220ms ease, box-shadow 260ms ease, border-color 200ms ease;
+	will-change: transform;
+}
+
+.card-kinetic:hover {
+	transform: translateY(-6px) scale(1.01);
+	box-shadow: 0 20px 38px rgba(15, 23, 42, 0.16);
+	border-color: rgba(0, 80, 200, 0.35);
+}
+
+.review-card {
+	position: relative;
+	overflow: hidden;
+}
+
+.review-card::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.55) 42%, transparent 70%);
+	transform: translateX(-130%);
+	transition: transform 700ms ease;
+	pointer-events: none;
+}
+
+.review-card:hover::before {
+	transform: translateX(130%);
+}
+
+.stars-twinkle svg {
+	animation: none;
+}
+
+.stars-twinkle.in-view svg {
+	animation: starTwinkle 2.2s ease-in-out infinite;
+}
+
+.stars-twinkle svg:nth-child(2) {
+	animation-delay: 0.1s;
+}
+
+.stars-twinkle svg:nth-child(3) {
+	animation-delay: 0.2s;
+}
+
+.stars-twinkle svg:nth-child(4) {
+	animation-delay: 0.3s;
+}
+
+.stars-twinkle svg:nth-child(5) {
+	animation-delay: 0.4s;
+}
+
+.map-card-pop {
+	opacity: 0;
+	transform: translateY(18px);
+	transition: transform 260ms ease, box-shadow 260ms ease;
+}
+
+.map-card-pop.in-view {
+	animation: reveal 820ms ease-out both;
+}
+
+.map-card-pop:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 22px 40px rgba(15, 23, 42, 0.2);
 }
 
 .pulse-soft {
@@ -327,6 +462,11 @@ body {
 }
 
 .reveal {
+	opacity: 0;
+	transform: translateY(18px);
+}
+
+.reveal.in-view {
 	animation: reveal 700ms ease-out both;
 }
 
@@ -387,6 +527,48 @@ body {
 	}
 	100% {
 		box-shadow: 0 0 0 0 rgba(30, 64, 175, 0);
+	}
+}
+
+@keyframes ambientDrift {
+	0% {
+		transform: translateY(0) translateX(0) scale(1);
+	}
+	100% {
+		transform: translateY(-12px) translateX(8px) scale(1.05);
+	}
+}
+
+@keyframes titleBeam {
+	from {
+		transform: scaleX(0);
+		opacity: 0;
+	}
+	to {
+		transform: scaleX(1);
+		opacity: 1;
+	}
+}
+
+@keyframes starTwinkle {
+	0%,
+	100% {
+		transform: translateY(0) scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: translateY(-1px) scale(1.12);
+		opacity: 0.85;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
 	}
 }
 
