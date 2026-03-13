@@ -284,6 +284,15 @@ function HomePage() {
     return () => observer.disconnect()
   }, [filteredInventory, filtersOpen])
 
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      const inventoryCards = document.querySelectorAll('#inventory article.reveal')
+      inventoryCards.forEach((card) => card.classList.add('in-view'))
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [filteredInventory])
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden">
       <header className="fixed inset-x-0 top-0 z-50 bg-white/85 backdrop-blur">
