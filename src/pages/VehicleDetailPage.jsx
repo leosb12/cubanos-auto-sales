@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { terrain2017 } from '../data/vehicles'
+import { altima2017, buickEnvision2019, enclave2017, escape2016, impala2017, malibu2018, terrain2017, terrainAzul2017 } from '../data/vehicles'
 
 const vehiclesBySlug = {
   [terrain2017.slug]: terrain2017,
+  [impala2017.slug]: impala2017,
+  [malibu2018.slug]: malibu2018,
+  [terrainAzul2017.slug]: terrainAzul2017,
+  [escape2016.slug]: escape2016,
+  [buickEnvision2019.slug]: buickEnvision2019,
+  [enclave2017.slug]: enclave2017,
+  [altima2017.slug]: altima2017,
 }
 
 function VehicleDetailPage() {
@@ -18,6 +25,9 @@ function VehicleDetailPage() {
   if (!vehicle) {
     return <Navigate to="/" replace />
   }
+
+  const whatsappMessage = `Hola, me interesa recibir informacion del ${vehicle.model}. Quisiera confirmar disponibilidad, precio final en efectivo y opciones de financiamiento. Gracias.`
+  const requestInfoWhatsAppHref = `https://wa.me/12705991187?text=${encodeURIComponent(whatsappMessage)}`
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
@@ -86,9 +96,22 @@ function VehicleDetailPage() {
               ))}
             </ul>
 
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-blue-700">Technical Data</p>
+              <div className="mt-3 grid gap-2">
+                {vehicle.technicalSpecs?.map((spec) => (
+                  <div key={spec.label} className="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">{spec.label}</p>
+                    <p className="text-sm font-bold text-slate-900">{spec.value}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-[11px] text-slate-500">EPA economy figures sourced from fueleconomy.gov for matching year/powertrain configurations.</p>
+            </div>
+
             <div className="grid gap-3 sm:grid-cols-2">
-              <a href="tel:+12708430000" className="cta-primary rounded-xl px-4 py-3 text-center text-sm font-bold">Call Sales</a>
-              <a href="mailto:sales@cubanosautosales.com" className="cta-secondary rounded-xl px-4 py-3 text-center text-sm font-bold">Request Info</a>
+              <a href="tel:+12705991187" className="cta-primary rounded-xl px-4 py-3 text-center text-sm font-bold">Call Sales</a>
+              <a href={requestInfoWhatsAppHref} target="_blank" rel="noreferrer" className="cta-secondary rounded-xl px-4 py-3 text-center text-sm font-bold">Request Info</a>
             </div>
 
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Cash price is fixed: no hidden fees, no price games.</p>

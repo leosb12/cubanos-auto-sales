@@ -19,11 +19,13 @@ const stats = [
 
 const inventory = [
   { id: 1, slug: '2017-gmc-terrain-awd-sle', coverImage: '/2017-gmc-terrain-awd-sle/hero-front.jpg', model: '2017 GMC Terrain AWD SLE', price: '$7,800 Cash', miles: '104,700 mi', fuel: 'Gasoline' },
-  { id: 2, model: '2022 Honda Accord Sport', price: '$23,600', miles: '28,120 mi', fuel: 'Gasoline' },
-  { id: 3, model: '2021 Ford F-150 XLT', price: '$34,500', miles: '33,800 mi', fuel: 'Gasoline' },
-  { id: 4, model: '2023 Hyundai Tucson SEL', price: '$27,300', miles: '18,905 mi', fuel: 'Gasoline' },
-  { id: 5, model: '2022 Chevrolet Malibu LT', price: '$21,900', miles: '26,770 mi', fuel: 'Gasoline' },
-  { id: 6, model: '2021 Nissan Altima SR', price: '$20,700', miles: '31,540 mi', fuel: 'Gasoline' },
+  { id: 2, slug: '2017-chevrolet-impala-lt', coverImage: '/2017-chevrolet-impala-lt/hero-front.jpg', model: '2017 Chevrolet Impala LT', price: '$7,500 Cash', miles: '115,200 mi', fuel: 'Gasoline' },
+  { id: 3, slug: '2018-chevrolet-malibu-ls', coverImage: '/2018-chevrolet-malibu-ls/hero-front.jpg', model: '2018 Chevrolet Malibu', price: '$8,750 Cash', miles: '92,500 mi', fuel: 'Gasoline' },
+  { id: 4, slug: '2017-gmc-terrain-azul', coverImage: '/2017-gmc-terrain-azul/hero-front.jpg', model: '2017 GMC Terrain V6', price: '$9,250 Cash', miles: '43,000 mi', fuel: 'Gasoline' },
+  { id: 5, slug: '2016-ford-escape-se', coverImage: '/2016-ford-escape-se/front-view.jpg', model: '2016 Ford Escape SE 1.6L', price: '$6,399 Cash', miles: '116,438 mi', fuel: 'Gasoline' },
+  { id: 6, slug: '2019-buick-envision-essence', coverImage: '/2019-buick-envision-essence/front-view.jpg', model: '2019 Buick Envision FWD Essence', price: '$9,999 Cash', miles: '91,805 mi', fuel: 'Gasoline' },
+  { id: 7, slug: '2017-buick-enclave-leather', coverImage: '/2017-buick-enclave-leather/hero-front.jpg', model: '2017 Buick Enclave Leather', price: '$9,999 Cash', miles: '101,282 mi', fuel: 'Gasoline' },
+  { id: 8, slug: '2017-nissan-altima-25', coverImage: '/2017-nissan-altima-25/portada.jpg', model: '2017 Nissan Altima 2.5L', price: '$6,699 Cash', miles: '93,255 mi', fuel: 'Gasoline' },
 ]
 
 const benefits = [
@@ -150,7 +152,7 @@ function HomePage() {
             <span className="hidden items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.11em] text-slate-700 md:inline-flex">
               <IconStar className="h-3.5 w-3.5 text-red-600" /> Cuba Inspired
             </span>
-            <a href="tel:+12708430000" className="cta-primary pulse-soft hidden rounded-full px-5 py-2 text-sm font-bold shadow-lg shadow-blue-900/20 sm:inline-flex">
+            <a href="tel:+12705991187" className="cta-primary pulse-soft hidden rounded-full px-5 py-2 text-sm font-bold shadow-lg shadow-blue-900/20 sm:inline-flex">
               Call Sales
             </a>
             <button
@@ -179,7 +181,7 @@ function HomePage() {
                   {item.label}
                 </a>
               ))}
-              <a href="tel:+12708430000" className="cta-primary mt-1 inline-flex w-full justify-center rounded-md px-4 py-2 text-sm font-bold">
+              <a href="tel:+12705991187" className="cta-primary mt-1 inline-flex w-full justify-center rounded-md px-4 py-2 text-sm font-bold">
                 Call Sales
               </a>
             </div>
@@ -400,7 +402,7 @@ function HomePage() {
               <h2 className="font-display text-5xl leading-none text-slate-950 sm:text-6xl">Let us find your next car</h2>
               <div className="mt-6 space-y-4 text-slate-700">
                 <p><span className="font-bold text-slate-900">Location:</span> 1054 Old Barren River Rd Bay 7, Bowling Green, KY</p>
-                <p><span className="font-bold text-slate-900">Phone:</span> <a href="tel:+12708430000" className="font-semibold text-blue-700">(270) 843-0000</a></p>
+                <p><span className="font-bold text-slate-900">Phone:</span> <a href="tel:+12705991187" className="font-semibold text-blue-700">270-599-1187</a></p>
                 <p><span className="font-bold text-slate-900">Email:</span> <a href="mailto:sales@cubanosautosales.com" className="font-semibold text-blue-700">sales@cubanosautosales.com</a></p>
                 <p><span className="font-bold text-slate-900">Hours:</span> Mon - Sat 9:00 AM to 6:00 PM</p>
               </div>
