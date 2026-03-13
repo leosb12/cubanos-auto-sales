@@ -81,7 +81,13 @@ function VehicleDetailPage() {
           <div className="reveal">
             <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-xl shadow-slate-400/20">
               <div className="aspect-[16/10] bg-slate-900">
-                <img src={activeImage} alt={vehicle.model} className="h-full w-full object-cover" />
+                <img
+                  src={activeImage}
+                  alt={vehicle.model}
+                  className="h-full w-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                />
               </div>
             </div>
 
@@ -94,7 +100,13 @@ function VehicleDetailPage() {
                   className={`overflow-hidden rounded-lg border ${activeImage === image ? 'border-blue-700' : 'border-slate-300'} bg-white`}
                   aria-label={`View image ${idx + 1}`}
                 >
-                  <img src={image} alt={`${vehicle.model} ${idx + 1}`} className="aspect-[4/3] w-full object-cover" />
+                  <img
+                    src={image}
+                    alt={`${vehicle.model} ${idx + 1}`}
+                    className="aspect-[4/3] w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </button>
               ))}
             </div>

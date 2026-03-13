@@ -164,6 +164,8 @@ function IconStar({ className = '' }) {
 
 function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isHeroImageLoading, setIsHeroImageLoading] = useState(true)
+  const [isMapLoading, setIsMapLoading] = useState(true)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [titleFilter, setTitleFilter] = useState('all')
@@ -280,7 +282,7 @@ function HomePage() {
     animatedElements.forEach((element) => observer.observe(element))
 
     return () => observer.disconnect()
-  }, [])
+  }, [filteredInventory, filtersOpen])
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden">
@@ -348,8 +350,8 @@ function HomePage() {
         <section className="hero-v2 relative isolate overflow-hidden border-b border-slate-700">
           <div className="hero-v2-ornament" aria-hidden="true"></div>
           <div className="relative z-10 mx-auto grid max-w-7xl gap-8 px-4 pb-12 pt-10 sm:px-6 sm:pb-14 sm:pt-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:px-8 lg:pb-16 lg:pt-14">
-            <div className="reveal relative z-10 order-2 lg:order-1">
-              <p className="mb-4 inline-flex items-center rounded-full border border-blue-300/35 bg-slate-900/55 px-3 py-1 text-xs font-bold tracking-[0.12em] text-blue-100 shadow-sm backdrop-blur-sm">
+            <div className="reveal relative z-10 order-2 text-center lg:order-1 lg:text-left">
+              <p className="mb-4 inline-flex items-center rounded-full border border-blue-300/35 bg-slate-900/55 px-3 py-1 text-xs font-bold tracking-[0.12em] text-blue-100 shadow-sm backdrop-blur-sm lg:mx-0">
                 BOWLING GREEN, KENTUCKY
               </p>
               <h1 className="font-display text-[3.05rem] leading-[0.9] text-white sm:text-7xl lg:text-8xl">
@@ -357,11 +359,11 @@ function HomePage() {
                 <br />
                 CUBAN STYLE
               </h1>
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg lg:mx-0 mx-auto">
                 Bold inventory, clear numbers, and fast approvals. A modern sales experience inspired by Cuban color and confidence.
               </p>
 
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-wrap justify-center gap-3 lg:justify-start">
                 <a href="#inventory" className="cta-primary rounded-full px-6 py-3 text-sm font-bold shadow-lg shadow-blue-900/20">
                   Explore Inventory
                 </a>
@@ -370,7 +372,7 @@ function HomePage() {
                 </a>
               </div>
 
-              <div className="mt-6 grid max-w-xl grid-cols-3 gap-2.5 sm:gap-3">
+              <div className="mt-6 grid max-w-xl grid-cols-3 gap-2.5 sm:gap-3 lg:mx-0 mx-auto">
                 <div className="hero-v2-metric reveal-delay-1">
                   <p className="hero-v2-metric-value">NO FEES</p>
                   <p className="hero-v2-metric-label">Transparent Deals</p>
@@ -388,7 +390,16 @@ function HomePage() {
 
             <div className="reveal reveal-delay-1 relative z-10 order-1 lg:order-2">
               <div className="hero-v2-frame">
-                <img src="/bannercubanos.jpg" alt="Classic Cuban car by the seaside" className="hero-v2-image" />
+                {isHeroImageLoading && <div className="hero-v2-image-placeholder" aria-hidden="true"></div>}
+                <img
+                  src="/bannercubanos.jpg"
+                  alt="Classic Cuban car by the seaside"
+                  className={`hero-v2-image ${isHeroImageLoading ? '' : 'is-loaded'}`}
+                  fetchPriority="high"
+                  loading="eager"
+                  decoding="async"
+                  onLoad={() => setIsHeroImageLoading(false)}
+                />
               </div>
             </div>
           </div>
@@ -595,7 +606,13 @@ function HomePage() {
                 <article key={car.id} className={`reveal card-kinetic cuba-accent-border overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-300/20 ${index % 3 === 1 ? 'reveal-delay-1' : index % 3 === 2 ? 'reveal-delay-2' : ''}`}>
                   <div className="relative h-44 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white">
                     {car.coverImage && (
-                      <img src={car.coverImage} alt={`${car.model} portada`} className="absolute inset-0 h-full w-full object-cover" />
+                      <img
+                        src={car.coverImage}
+                        alt={`${car.model} portada`}
+                        className="absolute inset-0 h-full w-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
                     )}
                     <div className="absolute inset-0 bg-slate-950/40" aria-hidden="true"></div>
                     <div className="relative z-10 flex items-center justify-between">
@@ -818,12 +835,21 @@ function HomePage() {
                 <h3 className="text-xl font-bold">Cubanos Auto Sales &amp; Repair LLC</h3>
                 <p className="mt-1 text-sm text-slate-300">Visit us in Bowling Green, KY</p>
               </div>
-              <div className="min-h-[420px] flex-1 border-t border-slate-200">
+              <div className="relative min-h-[420px] flex-1 border-t border-slate-200">
+                {isMapLoading && (
+                  <div className="absolute inset-x-0 bottom-0 top-[73px] z-10 flex items-center justify-center bg-white/85 backdrop-blur-sm">
+                    <div className="flex items-center gap-3 rounded-full border border-slate-300 bg-white px-4 py-2 shadow-lg shadow-slate-300/25">
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-blue-700"></span>
+                      <span className="text-sm font-semibold text-slate-700">Loading map...</span>
+                    </div>
+                  </div>
+                )}
                 <iframe
                   title="Cubanos Auto Sales & Repair LLC on Google Maps"
                   src="https://www.google.com/maps?q=Cubanos+Auto+Sales+%26+Repair+LLC,+Bowling+Green,+KY&z=17&output=embed"
                   className="h-full w-full"
                   loading="lazy"
+                  onLoad={() => setIsMapLoading(false)}
                   referrerPolicy="no-referrer-when-downgrade"
                 ></iframe>
               </div>

@@ -11,6 +11,24 @@ body {
 	color: var(--ink);
 }
 
+a[href],
+button,
+[role='button'],
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+select,
+summary {
+	cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+[aria-disabled='true'] {
+	cursor: not-allowed;
+}
+
 .font-display {
 	font-family: 'Teko', 'Impact', sans-serif;
 	letter-spacing: 0.03em;
@@ -179,6 +197,17 @@ body {
 	animation: reveal 700ms ease-out both;
 }
 
+.hero-v2-image-placeholder {
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(circle at 25% 28%, rgba(59, 130, 246, 0.4), transparent 42%),
+		radial-gradient(circle at 72% 70%, rgba(239, 68, 68, 0.3), transparent 48%),
+		linear-gradient(120deg, #0b1735 0%, #1e293b 50%, #172554 100%);
+	animation: heroPlaceholderPulse 1.7s ease-in-out infinite alternate;
+	z-index: 1;
+}
+
 .hero-v2-frame::after {
 	content: '';
 	position: absolute;
@@ -187,11 +216,20 @@ body {
 }
 
 .hero-v2-image {
+	display: block;
 	height: 100%;
 	width: 100%;
 	object-fit: cover;
 	object-position: center 46%;
 	animation: heroZoom 14s ease-in-out infinite alternate;
+	opacity: 0;
+	transition: opacity 380ms ease;
+	position: relative;
+	z-index: 2;
+}
+
+.hero-v2-image.is-loaded {
+	opacity: 1;
 }
 
 .hero-v2-metric {
@@ -232,13 +270,13 @@ body {
 
 @media (max-width: 640px) {
 	.hero-v2-frame {
-		aspect-ratio: 16 / 10;
-		min-height: 220px;
+		aspect-ratio: auto;
+		height: clamp(220px, 56vw, 320px);
 	}
 
 	.hero-v2-image {
 		object-fit: cover;
-		object-position: center 38%;
+		object-position: center center;
 		animation-duration: 18s;
 	}
 
@@ -256,6 +294,16 @@ body {
 
 	.hero-v2::before {
 		filter: blur(9px) brightness(0.38) saturate(0.95);
+	}
+}
+
+@media (max-width: 480px) {
+	.hero-v2 {
+		text-align: center;
+	}
+
+	.hero-v2 .hero-v2-ornament {
+		opacity: 0.2;
 	}
 }
 
@@ -515,6 +563,15 @@ body {
 	}
 	100% {
 		transform: scale(1.06);
+	}
+}
+
+@keyframes heroPlaceholderPulse {
+	0% {
+		filter: brightness(0.92);
+	}
+	100% {
+		filter: brightness(1.08);
 	}
 }
 
