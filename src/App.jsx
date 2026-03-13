@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { Link, Route, Routes } from 'react-router-dom'
 import './App.css'
+import VehicleDetailPage from './pages/VehicleDetailPage'
 
 const menu = [
   { label: 'Inventory', href: '#inventory' },
@@ -16,7 +18,7 @@ const stats = [
 ]
 
 const inventory = [
-  { id: 1, model: '2023 Toyota Camry SE', price: '$24,900', miles: '21,480 mi', fuel: 'Gasoline' },
+  { id: 1, slug: '2017-gmc-terrain-awd-sle', coverImage: '/2017%20GMC%20terrain/portada.jpg', model: '2017 GMC Terrain AWD SLE', price: '$7,800 Cash', miles: '104,700 mi', fuel: 'Gasoline' },
   { id: 2, model: '2022 Honda Accord Sport', price: '$23,600', miles: '28,120 mi', fuel: 'Gasoline' },
   { id: 3, model: '2021 Ford F-150 XLT', price: '$34,500', miles: '33,800 mi', fuel: 'Gasoline' },
   { id: 4, model: '2023 Hyundai Tucson SEL', price: '$27,300', miles: '18,905 mi', fuel: 'Gasoline' },
@@ -109,7 +111,7 @@ function IconStar({ className = '' }) {
   )
 }
 
-function App() {
+function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
@@ -251,12 +253,16 @@ function App() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {inventory.map((car, index) => (
                 <article key={car.id} className={`reveal cuba-accent-border overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-300/20 ${index % 3 === 1 ? 'reveal-delay-1' : index % 3 === 2 ? 'reveal-delay-2' : ''}`}>
-                  <div className="h-44 bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white">
-                    <div className="flex items-center justify-between">
+                  <div className="relative h-44 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white">
+                    {car.coverImage && (
+                      <img src={car.coverImage} alt={`${car.model} portada`} className="absolute inset-0 h-full w-full object-cover" />
+                    )}
+                    <div className="absolute inset-0 bg-slate-950/40" aria-hidden="true"></div>
+                    <div className="relative z-10 flex items-center justify-between">
                       <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue-200">Certified Unit</p>
                       <IconCar className="h-6 w-6" />
                     </div>
-                    <h3 className="mt-6 text-2xl font-bold leading-tight">{car.model}</h3>
+                    <h3 className="relative z-10 mt-6 text-2xl font-bold leading-tight">{car.model}</h3>
                   </div>
                   <div className="p-5">
                     <div className="mb-4 flex items-end justify-between">
@@ -273,9 +279,15 @@ function App() {
                         <p className="font-semibold text-slate-800">{car.fuel}</p>
                       </div>
                     </div>
-                    <button className="cta-primary mt-5 w-full rounded-xl px-4 py-2.5 text-sm font-bold">
-                      View Vehicle Details
-                    </button>
+                    {car.slug ? (
+                      <Link to={`/inventory/${car.slug}`} className="cta-primary mt-5 inline-flex w-full justify-center rounded-xl px-4 py-2.5 text-sm font-bold">
+                        View Vehicle Details
+                      </Link>
+                    ) : (
+                      <button className="cta-primary mt-5 w-full rounded-xl px-4 py-2.5 text-sm font-bold" type="button">
+                        View Vehicle Details
+                      </button>
+                    )}
                   </div>
                 </article>
               ))}
@@ -406,6 +418,15 @@ function App() {
         </div>
       </footer>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/inventory/:slug" element={<VehicleDetailPage />} />
+    </Routes>
   )
 }
 
