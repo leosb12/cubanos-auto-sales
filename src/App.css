@@ -1,0 +1,392 @@
+@import 'tailwindcss';
+
+:root {
+	--cuba-blue: #0050c8;
+	--cuba-red: #d62828;
+	--ink: #0f172a;
+}
+
+body {
+	font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+	color: var(--ink);
+}
+
+.font-display {
+	font-family: 'Teko', 'Impact', sans-serif;
+	letter-spacing: 0.03em;
+}
+
+.cuba-grid {
+	background-image: linear-gradient(to right, rgba(15, 23, 42, 0.06) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+	background-size: 36px 36px;
+}
+
+.hero-glow {
+	background: radial-gradient(circle at 20% 20%, rgba(0, 80, 200, 0.3), transparent 45%),
+		radial-gradient(circle at 75% 70%, rgba(214, 40, 40, 0.28), transparent 50%);
+}
+
+.cuba-wash {
+	background:
+		linear-gradient(135deg, rgba(0, 80, 200, 0.14), rgba(255, 255, 255, 0.85) 46%, rgba(214, 40, 40, 0.12)),
+		repeating-linear-gradient(90deg, rgba(2, 6, 23, 0.04) 0px, rgba(2, 6, 23, 0.04) 1px, transparent 1px, transparent 54px);
+}
+
+.cuba-flag-ribbon {
+	height: 5px;
+	width: 100%;
+	background: repeating-linear-gradient(
+		90deg,
+		#0050c8 0px,
+		#0050c8 72px,
+		#ffffff 72px,
+		#ffffff 118px
+	);
+}
+
+.cuba-mini-flag {
+	position: relative;
+	display: inline-flex;
+	height: 22px;
+	width: 58px;
+	border-radius: 999px;
+	overflow: hidden;
+	box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.12);
+	background: repeating-linear-gradient(
+		180deg,
+		#0050c8 0px,
+		#0050c8 4px,
+		#ffffff 4px,
+		#ffffff 8px
+	);
+}
+
+.cuba-mini-flag::before {
+	content: '';
+	position: absolute;
+	inset: 0 auto 0 0;
+	width: 38%;
+	background: #d62828;
+	clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.cuba-mini-flag::after {
+	content: '★';
+	position: absolute;
+	left: 5px;
+	top: 2px;
+	font-size: 12px;
+	line-height: 1;
+	color: #ffffff;
+}
+
+.cuba-stripes {
+	height: 10px;
+	width: 100%;
+	background: repeating-linear-gradient(
+		90deg,
+		#0050c8 0px,
+		#0050c8 56px,
+		#ffffff 56px,
+		#ffffff 100px
+	);
+	opacity: 0.7;
+}
+
+.cuba-flag-card {
+	position: relative;
+	overflow: hidden;
+	border-radius: 18px;
+	height: 170px;
+	border: 1px solid #d7e3ff;
+	box-shadow: 0 16px 30px rgba(30, 41, 59, 0.12);
+	background: #ffffff;
+}
+
+.cuba-accent-border {
+	position: relative;
+}
+
+.cuba-accent-border::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: 1rem;
+	padding: 1px;
+	background: linear-gradient(120deg, rgba(0, 80, 200, 0.55), rgba(214, 40, 40, 0.6));
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+.cuba-night {
+	background:
+		radial-gradient(circle at 10% -10%, rgba(0, 80, 200, 0.36), transparent 36%),
+		radial-gradient(circle at 100% 110%, rgba(214, 40, 40, 0.3), transparent 38%),
+		linear-gradient(135deg, #020617 10%, #0b1735 60%, #291024 100%);
+}
+
+.hero-v2 {
+	background: linear-gradient(130deg, #0b1735 0%, #111827 52%, #2b1225 100%);
+}
+
+.hero-v2::before {
+	content: '';
+	position: absolute;
+	inset: -3%;
+	background-image: url('/cuba%20bandera.png');
+	background-size: cover;
+	background-position: center;
+	filter: blur(10px) brightness(0.42) saturate(0.95);
+	transform: scale(1.08);
+	opacity: 0.85;
+	pointer-events: none;
+}
+
+.hero-v2::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(90deg, rgba(2, 6, 23, 0.68) 0%, rgba(2, 6, 23, 0.52) 45%, rgba(2, 6, 23, 0.64) 100%),
+		radial-gradient(circle at 18% 16%, rgba(0, 80, 200, 0.18), transparent 42%),
+		radial-gradient(circle at 84% 82%, rgba(214, 40, 40, 0.2), transparent 44%);
+	pointer-events: none;
+}
+
+.hero-v2-ornament {
+	position: absolute;
+	inset: 0;
+	background-image:
+		linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+	background-size: 34px 34px;
+	opacity: 0.26;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.hero-v2-frame {
+	position: relative;
+	overflow: hidden;
+	border-radius: 1.35rem;
+	border: 1px solid rgba(255, 255, 255, 0.28);
+	box-shadow: 0 24px 48px rgba(2, 6, 23, 0.42);
+	background: #0b1735;
+	aspect-ratio: 16 / 10;
+	animation: reveal 700ms ease-out both;
+}
+
+.hero-v2-frame::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(180deg, rgba(2, 6, 23, 0.04), rgba(2, 6, 23, 0.34));
+}
+
+.hero-v2-image {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+	object-position: center 46%;
+	animation: heroZoom 14s ease-in-out infinite alternate;
+}
+
+.hero-v2-metric {
+	border: 1px solid rgba(191, 219, 254, 0.24);
+	border-radius: 0.8rem;
+	background: rgba(15, 23, 42, 0.44);
+	padding: 0.6rem 0.5rem;
+	text-align: center;
+	box-shadow: 0 10px 24px rgba(2, 6, 23, 0.25);
+}
+
+.hero-v2-metric-value {
+	font-family: 'Teko', 'Impact', sans-serif;
+	font-size: 1.75rem;
+	line-height: 0.9;
+	color: #ffffff;
+	letter-spacing: 0.03em;
+}
+
+.hero-v2-metric-label {
+	margin-top: 0.1rem;
+	font-size: 0.66rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #bfdbfe;
+}
+
+@media (max-width: 1024px) {
+	.hero-v2-frame {
+		aspect-ratio: 16 / 9;
+	}
+
+	.hero-v2-image {
+		object-position: center 50%;
+	}
+}
+
+@media (max-width: 640px) {
+	.hero-v2-frame {
+		aspect-ratio: 16 / 10;
+		min-height: 220px;
+	}
+
+	.hero-v2-image {
+		object-fit: cover;
+		object-position: center 38%;
+		animation-duration: 18s;
+	}
+
+	.hero-v2-metric {
+		padding: 0.55rem 0.4rem;
+	}
+
+	.hero-v2-metric-value {
+		font-size: 1.45rem;
+	}
+
+	.hero-v2-metric-label {
+		font-size: 0.58rem;
+	}
+
+	.hero-v2::before {
+		filter: blur(9px) brightness(0.38) saturate(0.95);
+	}
+}
+
+.hero-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	border-radius: 999px;
+	border: 1px solid rgba(0, 80, 200, 0.26);
+	background: #ffffff;
+	padding: 0.45rem 0.75rem;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #1e3a8a;
+	box-shadow: 0 8px 24px rgba(30, 64, 175, 0.14);
+}
+
+.cta-primary {
+	border: 1px solid #1e3a8a;
+	background: #1d4ed8;
+	color: #ffffff;
+	transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.cta-primary:hover {
+	background: #1e40af;
+	transform: translateY(-1px);
+}
+
+.cta-secondary {
+	border: 1px solid #1e40af;
+	background: #ffffff;
+	color: #1e3a8a;
+	transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.cta-secondary:hover {
+	background: #eff6ff;
+	transform: translateY(-1px);
+}
+
+.pulse-soft {
+	animation: pulseSoft 2.8s ease-in-out infinite;
+}
+
+.cuba-flag-stripes {
+	height: 100%;
+	width: 100%;
+	background: repeating-linear-gradient(
+		180deg,
+		#0050c8 0px,
+		#0050c8 24px,
+		#ffffff 24px,
+		#ffffff 48px
+	);
+}
+
+.cuba-flag-triangle {
+	position: absolute;
+	inset: 0 auto 0 0;
+	width: 36%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #d62828;
+	clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.reveal {
+	animation: reveal 700ms ease-out both;
+}
+
+.reveal-delay-1 {
+	animation-delay: 120ms;
+}
+
+.reveal-delay-2 {
+	animation-delay: 240ms;
+}
+
+.reveal-delay-3 {
+	animation-delay: 360ms;
+}
+
+.float-card {
+	animation: floatCard 4.5s ease-in-out infinite;
+}
+
+@keyframes reveal {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes floatCard {
+	0% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-10px);
+	}
+	100% {
+		transform: translateY(0);
+	}
+}
+
+@keyframes heroZoom {
+	0% {
+		transform: scale(1.01);
+	}
+	100% {
+		transform: scale(1.06);
+	}
+}
+
+@keyframes pulseSoft {
+	0% {
+		box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.32);
+	}
+	70% {
+		box-shadow: 0 0 0 10px rgba(30, 64, 175, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(30, 64, 175, 0);
+	}
+}
+
