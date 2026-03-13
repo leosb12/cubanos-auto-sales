@@ -26,8 +26,8 @@ function VehicleDetailPage() {
     return <Navigate to="/" replace />
   }
 
-  const whatsappMessage = `Hola, me interesa recibir informacion del ${vehicle.model}. Quisiera confirmar disponibilidad, precio final en efectivo y opciones de financiamiento. Gracias.`
-  const requestInfoWhatsAppHref = `https://wa.me/12705991187?text=${encodeURIComponent(whatsappMessage)}`
+  const whatsappMessage = `Hello, I would like to receive more information about the ${vehicle.model}.`
+  const requestInfoWhatsAppHref = `https://wa.me/12707919549?text=${encodeURIComponent(whatsappMessage)}`
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
