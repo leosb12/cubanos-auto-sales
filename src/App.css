@@ -193,7 +193,7 @@ select:disabled,
 	border: 1px solid rgba(255, 255, 255, 0.28);
 	box-shadow: 0 24px 48px rgba(2, 6, 23, 0.42);
 	background: #0b1735;
-	aspect-ratio: 16 / 10;
+	aspect-ratio: 16 / 9;
 	animation: reveal 700ms ease-out both;
 }
 
@@ -270,8 +270,9 @@ select:disabled,
 
 @media (max-width: 640px) {
 	.hero-v2-frame {
-		aspect-ratio: auto;
-		height: clamp(220px, 56vw, 320px);
+		aspect-ratio: 16 / 9;
+		height: auto;
+		min-height: 0;
 	}
 
 	.hero-v2-image {

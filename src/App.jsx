@@ -299,10 +299,10 @@ function HomePage() {
         <div className="cuba-flag-ribbon" aria-hidden="true"></div>
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <a href="#top" className="flex items-center gap-3">
-            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales logo" className="h-10 w-10 rounded-md" />
+            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales & Repair LLC logo" className="h-10 w-10 rounded-md" />
             <div>
-              <p className="font-display text-3xl leading-6 text-slate-900">Cubanos</p>
-              <p className="text-xs font-semibold tracking-[0.12em] text-blue-700">AUTO SALES</p>
+              <p className="font-display text-3xl leading-6 text-slate-900">Cubanos Auto Sales</p>
+              <p className="text-xs font-semibold tracking-[0.12em] text-blue-700">&amp; REPAIR LLC</p>
             </div>
           </a>
 
@@ -401,7 +401,7 @@ function HomePage() {
               <div className="hero-v2-frame">
                 {isHeroImageLoading && <div className="hero-v2-image-placeholder" aria-hidden="true"></div>}
                 <img
-                  src="/bannercubanos.jpg"
+                  src="/bannercubanos.png"
                   alt="Classic Cuban car by the seaside"
                   className={`hero-v2-image ${isHeroImageLoading ? '' : 'is-loaded'}`}
                   fetchPriority="high"
@@ -869,7 +869,7 @@ function HomePage() {
 
       <footer className="bg-slate-950 py-8 text-slate-300">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <p>© 2026 Cubanos Auto Sales. All rights reserved.</p>
+          <p>© 2026 Cubanos Auto Sales &amp; Repair LLC. All rights reserved.</p>
           <div className="flex items-center gap-5">
             <a href="#inventory" className="hover:text-white">Inventory</a>
             <a href="#financing" className="hover:text-white">Financing</a>

@@ -64,10 +64,10 @@ function VehicleDetailPage() {
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link to="/" className="flex items-center gap-3">
-            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales logo" className="h-10 w-10 rounded-md" />
+            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales & Repair LLC logo" className="h-10 w-10 rounded-md" />
             <div>
-              <p className="font-display text-3xl leading-6 text-slate-900">Cubanos</p>
-              <p className="text-xs font-semibold tracking-[0.12em] text-blue-700">AUTO SALES</p>
+              <p className="font-display text-3xl leading-6 text-slate-900">Cubanos Auto Sales</p>
+              <p className="text-xs font-semibold tracking-[0.12em] text-blue-700">&amp; REPAIR LLC</p>
             </div>
           </Link>
           <Link to="/" className="cta-secondary rounded-full px-4 py-2 text-sm font-bold">

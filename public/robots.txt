@@ -1,0 +1,22 @@
+# robots.txt for https://cubanosautosales.com/
+# Optimized for fast and clean discovery by major search engines.
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: *
+Allow: /
+
+# Reduce duplicate URL crawling with common tracking params.
+Disallow: /*?*utm_
+Disallow: /*?*fbclid=
+Disallow: /*?*gclid=
+
+Host: cubanosautosales.com
+Sitemap: https://cubanosautosales.com/sitemap.xml
