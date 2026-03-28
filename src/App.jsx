@@ -5,7 +5,6 @@ import VehicleDetailPage from './pages/VehicleDetailPage'
 import {
   altima2017,
   buickEnvision2019,
-  enclave2017,
   escape2016,
   impala2017,
   malibu2018,
@@ -57,7 +56,6 @@ const inventory = [
   terrainAzul2017,
   escape2016,
   buickEnvision2019,
-  enclave2017,
   altima2017,
 ].map((vehicle) => ({
   ...vehicle,

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { altima2017, buickEnvision2019, enclave2017, escape2016, impala2017, malibu2018, terrain2017, terrainAzul2017 } from '../data/vehicles'
+import { altima2017, buickEnvision2019, escape2016, impala2017, malibu2018, terrain2017, terrainAzul2017 } from '../data/vehicles'
 
 const vehiclesBySlug = {
   [terrain2017.slug]: terrain2017,
@@ -9,7 +9,6 @@ const vehiclesBySlug = {
   [terrainAzul2017.slug]: terrainAzul2017,
   [escape2016.slug]: escape2016,
   [buickEnvision2019.slug]: buickEnvision2019,
-  [enclave2017.slug]: enclave2017,
   [altima2017.slug]: altima2017,
 }
 

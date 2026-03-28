@@ -312,59 +312,6 @@ export const buickEnvision2019 = {
   ],
 }
 
-export const enclave2017 = {
-  id: 7,
-  slug: '2017-buick-enclave-leather',
-  model: '2017 Buick Enclave Leather',
-  price: '$9,999 Cash',
-  miles: '101,282 mi',
-  fuel: 'Gasoline',
-  drivetrain: 'FWD',
-  transmission: 'Automatic',
-  engine: '3.6L V6',
-  title: 'Rebuilt Title',
-  coverImage: imagePath('/2017-buick-enclave-leather', 'hero-front.jpg'),
-  gallery: [
-    imagePath('/2017-buick-enclave-leather', 'front-view.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'hero-front.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'rear-view.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'rear-view-angle.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'rear-three-quarter.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'interior-front-cabin.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'interior-center-console.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'interior-rear-seats.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'interior-rear-detail.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'instrument-cluster.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'infotainment-screen.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'backup-camera-display.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'blind-spot-mirror-detail.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'steering-wheel-detail.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'sunroof-detail.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'engine-bay.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'cargo-area.jpg'),
-    imagePath('/2017-buick-enclave-leather', 'cargo-area-detail.jpg'),
-  ],
-  highlights: [
-    'Only 101,282 actual miles with CARFAX available through an Advantage Dealer',
-    '3.6L engine, very good mechanical condition, and smooth road behavior',
-    'Leather heated seats, three-row seating, and premium family comfort',
-    'Bluetooth radio, Apple CarPlay, and rearview camera',
-    'Blind-spot mirror sensors and front/rear bumper sensors with bank financing available',
-  ],
-  description:
-    'This 2017 Buick Enclave Leather is a clean, well-equipped three-row SUV that delivers comfort, space, and strong everyday usability. With 101,282 actual miles and a proven 3.6L powertrain, it runs and drives very well with no known mechanical issues. It includes heated leather seating, Apple CarPlay, Bluetooth, rearview camera, push-button start, remote start, and advanced parking/awareness sensors.',
-  disclosure:
-    'The vehicle is offered with a rebuilt title. CARFAX is available, and dealer-supported bank financing is available for qualified buyers. It is also offered as a fixed cash deal at $9,999.',
-  technicalSpecs: [
-    { label: 'EPA Combined MPG', value: '18 MPG (FWD)' },
-    { label: 'EPA City / Hwy', value: '15 / 22 MPG (FWD)' },
-    { label: 'Estimated EPA Range', value: '396 miles (FWD)' },
-    { label: 'Estimated Fuel Cost / Year', value: '$2,450 (FWD)' },
-    { label: 'Fuel Recommendation', value: 'Regular Gasoline' },
-    { label: 'Passenger Capacity', value: '7 Passengers' },
-  ],
-}
-
 export const altima2017 = {
   id: 8,
   slug: '2017-nissan-altima-25',
