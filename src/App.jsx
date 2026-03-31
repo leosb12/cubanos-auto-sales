@@ -3,7 +3,6 @@ import { Link, Route, Routes } from 'react-router-dom'
 import './App.css'
 import VehicleDetailPage from './pages/VehicleDetailPage'
 import {
-  altima2017,
   buickEnvision2019,
   escape2016,
   impala2017,
@@ -42,7 +41,7 @@ const inferBodyType = (model) => {
     return 'SUV'
   }
 
-  if (/(impala|malibu|altima|sedan)/.test(text)) {
+  if (/(impala|malibu|sedan)/.test(text)) {
     return 'Sedan'
   }
 
@@ -56,7 +55,6 @@ const inventory = [
   terrainAzul2017,
   escape2016,
   buickEnvision2019,
-  altima2017,
 ].map((vehicle) => ({
   ...vehicle,
   year: extractYear(vehicle.model),
