@@ -1,0 +1,90 @@
+.cached-image {
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.cached-image__surface {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+}
+
+.cached-image__media {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.015);
+  transition: opacity 280ms ease, transform 420ms ease;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+}
+
+.cached-image--loaded .cached-image__media,
+.cached-image--error .cached-image__media {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cached-image__media--fallback {
+  object-fit: cover;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.96), rgba(226, 232, 240, 0.88)),
+    linear-gradient(160deg, rgba(226, 232, 240, 0.95), rgba(203, 213, 225, 0.82));
+}
+
+.cached-image__skeleton {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(241, 245, 249, 0.98), rgba(226, 232, 240, 0.94) 48%, rgba(248, 250, 252, 0.98));
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+}
+
+.cached-image__skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 28%,
+    rgba(255, 255, 255, 0.72) 50%,
+    rgba(255, 255, 255, 0.18) 72%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: cachedImageShimmer 1.5s linear infinite;
+}
+
+@keyframes cachedImageShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cached-image__media {
+    transition: none;
+    transform: none;
+  }
+
+  .cached-image__skeleton::after {
+    animation: none;
+    transform: translateX(0);
+  }
+}

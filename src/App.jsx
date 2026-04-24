@@ -1,14 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import './App.css'
+import CachedImage from './components/CachedImage'
 import VehicleDetailPage from './pages/VehicleDetailPage'
+import { preloadImages } from './services/imageCache'
 import {
-  buickEnvision2019,
+  cadillacSrx2013,
+  charger2019,
+  cruze2016,
   escape2016,
   impala2017,
   malibu2018,
   terrain2017,
-  terrainAzul2017,
 } from './data/vehicles'
 
 const menu = [
@@ -25,9 +28,15 @@ const stats = [
   { value: '12+', label: 'Years in Bowling Green' },
 ]
 
-const parseMoney = (value) => Number(String(value || '').replace(/[^\d.]/g, ''))
+const parseMoneySafe = (value) => {
+  const digits = String(value || '').replace(/[^\d.]/g, '')
+  return digits ? Number(digits) : null
+}
 
-const parseMiles = (value) => Number(String(value || '').replace(/[^\d]/g, ''))
+const parseMiles = (value) => {
+  const digits = String(value || '').replace(/[^\d]/g, '')
+  return digits ? Number(digits) : null
+}
 
 const extractYear = (model) => {
   const match = String(model || '').match(/\b(19|20)\d{2}\b/)
@@ -37,11 +46,11 @@ const extractYear = (model) => {
 const inferBodyType = (model) => {
   const text = String(model || '').toLowerCase()
 
-  if (/(terrain|escape|envision|enclave|suv)/.test(text)) {
+  if (/(terrain|escape|envision|enclave|srx|suv)/.test(text)) {
     return 'SUV'
   }
 
-  if (/(impala|malibu|sedan)/.test(text)) {
+  if (/(impala|malibu|cruze|charger|sedan)/.test(text)) {
     return 'Sedan'
   }
 
@@ -49,18 +58,19 @@ const inferBodyType = (model) => {
 }
 
 const inventory = [
+  charger2019,
+  cadillacSrx2013,
+  cruze2016,
   terrain2017,
   impala2017,
   malibu2018,
-  terrainAzul2017,
   escape2016,
-  buickEnvision2019,
 ].map((vehicle) => ({
   ...vehicle,
   year: extractYear(vehicle.model),
   bodyType: inferBodyType(vehicle.model),
   normalizedTitle: String(vehicle.title || '').toLowerCase().includes('clean') ? 'clean' : 'rebuilt',
-  priceValue: parseMoney(vehicle.price),
+  priceValue: parseMoneySafe(vehicle.price),
   milesValue: parseMiles(vehicle.miles),
 }))
 
@@ -195,7 +205,7 @@ function HomePage() {
       const matchesBodyType = bodyTypeFilter === 'all' || car.bodyType === bodyTypeFilter
       const matchesMinPrice = minPriceValue === null || car.priceValue >= minPriceValue
       const matchesMaxPrice = maxPriceValue === null || car.priceValue <= maxPriceValue
-      const matchesMaxMiles = maxMilesValue === null || car.milesValue <= maxMilesValue
+      const matchesMaxMiles = maxMilesValue === null || car.milesValue === null || car.milesValue <= maxMilesValue
       const matchesYearFrom = yearFromValue === null || (car.year !== null && car.year >= yearFromValue)
       const matchesYearTo = yearToValue === null || (car.year !== null && car.year <= yearToValue)
 
@@ -288,6 +298,13 @@ function HomePage() {
 
     return () => window.cancelAnimationFrame(frameId)
   }, [filteredInventory])
+
+  const preloadVehicleGallery = (car) => {
+    preloadImages([car.coverImage, ...(car.gallery || [])], {
+      idle: false,
+      limit: 6,
+    })
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden">
@@ -435,56 +452,63 @@ function HomePage() {
             </div>
 
             <div className="card-kinetic mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-300/15 sm:p-5">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-bold uppercase tracking-[0.1em] text-slate-700">Filter Inventory</p>
-                  <p className="text-sm font-semibold text-slate-600">{filteredInventory.length} vehicles found</p>
-                </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-[0.1em] text-slate-700">Filter Inventory</p>
+                    <p className="text-sm font-semibold text-slate-600">{filteredInventory.length} vehicles found</p>
+                  </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setFiltersOpen((prev) => !prev)}
-                    aria-expanded={filtersOpen}
-                    aria-controls="inventory-filters-panel"
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:bg-slate-100"
-                  >
-                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
-                      <path d="M4 6h16l-6.2 7.2v4.4l-3.6 1.8v-6.2L4 6z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    {filtersOpen ? 'Hide Filters' : 'Show Filters'}
-                    <svg viewBox="0 0 24 24" className={`h-4 w-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} fill="none" aria-hidden="true">
-                      <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {hasActiveFilters && (
+                      <button
+                        type="button"
+                        onClick={resetFilters}
+                        className="rounded-full border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:bg-slate-100"
+                      >
+                        Clear Filters
+                      </button>
+                    )}
 
-                  {hasActiveFilters && (
                     <button
                       type="button"
-                      onClick={resetFilters}
-                      className="rounded-full border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:bg-slate-100"
+                      onClick={() => setFiltersOpen((prev) => !prev)}
+                      aria-expanded={filtersOpen}
+                      aria-controls="inventory-filters-panel"
+                      className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:bg-slate-100"
                     >
-                      Clear Filters
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+                        <path d="M4 6h16l-6.2 7.2v4.4l-3.6 1.8v-6.2L4 6z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      {filtersOpen ? 'Hide Filters' : 'Show Filters'}
+                      <svg viewBox="0 0 24 24" className={`h-4 w-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} fill="none" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
                     </button>
-                  )}
+                  </div>
                 </div>
+
+                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+                  Search Model
+                  <div className={`flex items-center gap-2 rounded-xl border bg-white px-3 py-2 shadow-sm transition focus-within:border-blue-700 ${searchQuery ? 'border-blue-300' : 'border-slate-300'}`}>
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-slate-400" fill="none" aria-hidden="true">
+                      <path d="M10.5 18a7.5 7.5 0 1 1 5.4-2.3L21 21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(event) => setSearchQuery(event.target.value)}
+                      placeholder="Search a car"
+                      className="w-full border-0 bg-transparent p-0 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400"
+                    />
+                  </div>
+                </label>
               </div>
 
               <div
                 id="inventory-filters-panel"
                 className={`grid grid-cols-1 gap-3 transition-all duration-300 sm:grid-cols-2 xl:grid-cols-4 ${filtersOpen ? 'mt-4 opacity-100' : 'pointer-events-none mt-0 max-h-0 overflow-hidden opacity-0'}`}
               >
-                <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
-                  Search Model
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder="Example: Envision"
-                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold normal-case text-slate-900 outline-none transition focus:border-blue-700"
-                  />
-                </label>
-
                 <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
                   Title Status
                   <select
@@ -611,12 +635,14 @@ function HomePage() {
                 <article key={car.id} className={`reveal card-kinetic cuba-accent-border overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-300/20 ${index % 3 === 1 ? 'reveal-delay-1' : index % 3 === 2 ? 'reveal-delay-2' : ''}`}>
                   <div className="relative h-44 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white">
                     {car.coverImage && (
-                      <img
+                      <CachedImage
                         src={car.coverImage}
                         alt={`${car.model} portada`}
-                        className="absolute inset-0 h-full w-full object-cover"
+                        className="absolute inset-0"
+                        imgClassName="h-full w-full object-cover"
                         loading="lazy"
                         decoding="async"
+                        sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
                       />
                     )}
                     <div className="absolute inset-0 bg-slate-950/40" aria-hidden="true"></div>
@@ -632,10 +658,12 @@ function HomePage() {
                       <p className="text-3xl font-extrabold text-slate-900">{car.price}</p>
                     </div>
                     <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="rounded-lg bg-slate-100 p-3">
-                        <p className="text-slate-500">Mileage</p>
-                        <p className="font-semibold text-slate-800">{car.miles}</p>
-                      </div>
+                      {car.miles && (
+                        <div className="rounded-lg bg-slate-100 p-3">
+                          <p className="text-slate-500">Mileage</p>
+                          <p className="font-semibold text-slate-800">{car.miles}</p>
+                        </div>
+                      )}
                       <div className="rounded-lg bg-slate-100 p-3">
                         <p className="text-slate-500">Fuel Type</p>
                         <p className="font-semibold text-slate-800">{car.fuel}</p>
@@ -644,7 +672,13 @@ function HomePage() {
                     {car.slug ? (
                       <Link
                         to={`/inventory/${car.slug}`}
-                        onClick={() => sessionStorage.setItem('inventoryScrollY', String(window.scrollY))}
+                        onMouseEnter={() => preloadVehicleGallery(car)}
+                        onFocus={() => preloadVehicleGallery(car)}
+                        onTouchStart={() => preloadVehicleGallery(car)}
+                        onClick={() => {
+                          preloadVehicleGallery(car)
+                          sessionStorage.setItem('inventoryScrollY', String(window.scrollY))
+                        }}
                         className="cta-primary mt-5 inline-flex w-full justify-center rounded-xl px-4 py-2.5 text-sm font-bold"
                       >
                         View Vehicle Details

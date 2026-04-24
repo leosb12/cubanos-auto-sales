@@ -1,20 +1,30 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { buickEnvision2019, escape2016, impala2017, malibu2018, terrain2017, terrainAzul2017 } from '../data/vehicles'
+import CachedImage from '../components/CachedImage'
+import { cadillacSrx2013, charger2019, cruze2016, escape2016, impala2017, malibu2018, terrain2017 } from '../data/vehicles'
+import { preloadImages } from '../services/imageCache'
 
 const vehiclesBySlug = {
   [terrain2017.slug]: terrain2017,
   [impala2017.slug]: impala2017,
   [malibu2018.slug]: malibu2018,
-  [terrainAzul2017.slug]: terrainAzul2017,
   [escape2016.slug]: escape2016,
-  [buickEnvision2019.slug]: buickEnvision2019,
+  [cruze2016.slug]: cruze2016,
+  [cadillacSrx2013.slug]: cadillacSrx2013,
+  [charger2019.slug]: charger2019,
 }
 
 function VehicleDetailPage() {
   const { slug } = useParams()
   const vehicle = useMemo(() => vehiclesBySlug[slug], [slug])
-  const [activeImage, setActiveImage] = useState(vehicle?.coverImage || '')
+  const [selectedImage, setSelectedImage] = useState({
+    slug: '',
+    src: '',
+  })
+  const activeImage =
+    selectedImage.slug === slug && selectedImage.src
+      ? selectedImage.src
+      : vehicle?.coverImage || vehicle?.gallery?.[0] || ''
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' })
@@ -50,6 +60,16 @@ function VehicleDetailPage() {
     return () => observer.disconnect()
   }, [slug])
 
+  useEffect(() => {
+    if (!vehicle) {
+      return undefined
+    }
+
+    return preloadImages([vehicle.coverImage, ...(vehicle.gallery || [])], {
+      idle: true,
+    })
+  }, [vehicle])
+
   if (!vehicle) {
     return <Navigate to="/" replace />
   }
@@ -79,12 +99,15 @@ function VehicleDetailPage() {
           <div className="reveal">
             <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-xl shadow-slate-400/20">
               <div className="aspect-[16/10] bg-slate-900">
-                <img
+                <CachedImage
                   src={activeImage}
                   alt={vehicle.model}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full"
+                  imgClassName="h-full w-full object-cover"
                   loading="eager"
                   decoding="async"
+                  fetchPriority="high"
+                  sizes="(min-width: 1024px) 52vw, 100vw"
                 />
               </div>
             </div>
@@ -92,18 +115,21 @@ function VehicleDetailPage() {
             <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-4">
               {vehicle.gallery.map((image, idx) => (
                 <button
-                  key={image}
+                  key={`${vehicle.slug}-${image}`}
                   type="button"
-                  onClick={() => setActiveImage(image)}
+                  onClick={() => setSelectedImage({ slug, src: image })}
                   className={`overflow-hidden rounded-lg border ${activeImage === image ? 'border-blue-700' : 'border-slate-300'} bg-white`}
                   aria-label={`View image ${idx + 1}`}
+                  aria-pressed={activeImage === image}
                 >
-                  <img
+                  <CachedImage
                     src={image}
                     alt={`${vehicle.model} ${idx + 1}`}
-                    className="aspect-[4/3] w-full object-cover"
+                    className="aspect-[4/3] w-full"
+                    imgClassName="h-full w-full object-cover"
                     loading="lazy"
                     decoding="async"
+                    sizes="(min-width: 1024px) 13vw, (min-width: 640px) 18vw, 30vw"
                   />
                 </button>
               ))}
@@ -118,14 +144,27 @@ function VehicleDetailPage() {
             <p className="text-4xl font-black text-blue-700">{vehicle.price}</p>
 
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Mileage</p><p className="font-bold text-slate-900">{vehicle.miles}</p></div>
+              {vehicle.miles && <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Mileage</p><p className="font-bold text-slate-900">{vehicle.miles}</p></div>}
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Engine</p><p className="font-bold text-slate-900">{vehicle.engine}</p></div>
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Drivetrain</p><p className="font-bold text-slate-900">{vehicle.drivetrain}</p></div>
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Title</p><p className="font-bold text-red-700">{vehicle.title}</p></div>
             </div>
 
             <p className="text-sm leading-relaxed text-slate-700">{vehicle.description}</p>
-            <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm leading-relaxed text-red-900">{vehicle.disclosure}</p>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 rounded-full bg-blue-50 p-2 text-blue-700">
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+                    <path d="M12 2.75A9.25 9.25 0 1 0 21.25 12 9.26 9.26 0 0 0 12 2.75Zm0 4.1a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Zm1.4 11.15h-2.8v-1.4h.7v-4.2h-.7V11h2.1v5.4h.7v1.4Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-blue-700">Vehicle Info</p>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-700">{vehicle.disclosure}</p>
+                </div>
+              </div>
+            </div>
 
             <ul className="space-y-2 text-sm text-slate-700">
               {vehicle.highlights.map((item) => (
@@ -154,7 +193,7 @@ function VehicleDetailPage() {
               <a href={requestInfoWhatsAppHref} target="_blank" rel="noreferrer" className="cta-secondary rounded-xl px-4 py-3 text-center text-sm font-bold">Request Info</a>
             </div>
 
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Cash price is fixed: no hidden fees, no price games.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Cash price only: no hidden fees, no price games.</p>
           </aside>
         </section>
       </main>

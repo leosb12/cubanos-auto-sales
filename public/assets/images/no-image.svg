@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Image unavailable</title>
+  <desc id="desc">Placeholder shown when a vehicle image cannot be loaded.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="52%" stop-color="#e2e8f0" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+    <linearGradient id="panel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96" />
+      <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.88" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#dc2626" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#bg)" />
+  <circle cx="220" cy="210" r="180" fill="#60a5fa" fill-opacity="0.12" />
+  <circle cx="1020" cy="730" r="210" fill="#f87171" fill-opacity="0.1" />
+
+  <rect x="90" y="90" width="1020" height="720" rx="42" fill="url(#panel)" />
+  <rect x="90" y="90" width="1020" height="18" rx="9" fill="url(#accent)" />
+
+  <g transform="translate(600 370)">
+    <rect x="-172" y="-110" width="344" height="220" rx="28" fill="#0f172a" fill-opacity="0.06" />
+    <path d="M-120-48h60l30-42h120l30 42h60c22.091 0 40 17.909 40 40v120c0 22.091-17.909 40-40 40h-300c-22.091 0-40-17.909-40-40V-8c0-22.091 17.909-40 40-40Z" fill="#0f172a" fill-opacity="0.16" />
+    <circle cx="0" cy="50" r="74" fill="#0f172a" fill-opacity="0.22" />
+    <circle cx="0" cy="50" r="46" fill="#e2e8f0" />
+    <path d="m-82-42 164 164" stroke="#dc2626" stroke-width="28" stroke-linecap="round" />
+  </g>
+
+  <text x="600" y="645" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700" fill="#0f172a">
+    Image unavailable
+  </text>
+  <text x="600" y="700" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#334155">
+    The vehicle photo could not be loaded right now.
+  </text>
+</svg>
