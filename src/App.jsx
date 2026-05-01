@@ -8,6 +8,7 @@ import {
   cadillacSrx2013,
   charger2019,
   cruze2016,
+  equinox2018,
   escape2016,
   impala2017,
   malibu2018,
@@ -58,6 +59,7 @@ const inferBodyType = (model) => {
 }
 
 const inventory = [
+  equinox2018,
   charger2019,
   cadillacSrx2013,
   cruze2016,

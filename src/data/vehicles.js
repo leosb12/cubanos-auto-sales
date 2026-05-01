@@ -366,3 +366,57 @@ export const charger2019 = {
   ],
 }
 
+export const equinox2018 = {
+  id: 9,
+  slug: '2018-chevrolet-equinox-lt',
+  model: '2018 Chevrolet Equinox LT 1.5L Turbo',
+  price: '$11,400 Cash',
+  miles: '',
+  fuel: 'Gasoline',
+  drivetrain: 'FWD',
+  transmission: 'Automatic',
+  engine: '1.5L Turbo 4-Cylinder',
+  title: 'Clean Title',
+  coverImage: imagePath('/2018-chevrolet-equinox-lt', 'hero-front.jpg'),
+  gallery: [
+    imagePath('/2018-chevrolet-equinox-lt', 'hero-front.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'front-three-quarter.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'driver-side-profile.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'passenger-side-profile.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'rear-three-quarter.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'rear-view.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'rear-view-angle.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'interior-dashboard.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'infotainment-screen.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'front-view.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'instrument-cluster.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'steering-wheel-detail.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'interior-front-cabin.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'interior-rear-seats.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'cargo-area.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'cargo-area-detail.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'cargo-compartment.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'engine-bay.jpg'),
+    imagePath('/2018-chevrolet-equinox-lt', 'engine-bay-detail.jpg'),
+  ],
+  highlights: [
+    'Clean title with no engine or transmission issues reported',
+    '1.5L turbo LT trim with backup camera and Bluetooth audio',
+    'Side mirror sensors and rear bumper sensors for extra confidence',
+    'Cloth interior with power windows, power seats, and two keys',
+    'Bank financing available with a fixed $11,400 cash price',
+  ],
+  description:
+    'For sale: a 2018 Chevrolet Equinox LT 1.5L Turbo with a clean title and excellent overall condition. It features a backup camera, Bluetooth audio, side mirror sensors, and rear bumper sensors. The interior includes cloth upholstery, power windows, and power seats, and it comes with two keys and a standard key-start ignition.',
+  disclosure:
+    'Cubanos Auto Sale & Repair LLC, 1054 Old Barren River RD Bay 7, Bowling Green KY 42101. Cash price is $11,400, and bank financing is available for qualified buyers. There are absolutely no issues with the engine or transmission. For more information, call 270-599-1187.',
+  technicalSpecs: [
+    { label: 'Powertrain', value: '1.5L Turbo 4-Cylinder' },
+    { label: 'Title Status', value: 'Clean Title' },
+    { label: 'Interior', value: 'Cloth Upholstery' },
+    { label: 'Convenience', value: 'Power Windows, Power Seats, Two Keys' },
+    { label: 'Safety / Tech', value: 'Backup Camera, Bluetooth Audio, Mirror and Rear Sensors' },
+    { label: 'Financing', value: 'Bank Financing Available' },
+  ],
+}
+
