@@ -11,7 +11,6 @@ import {
   equinox2018,
   escape2016,
   impala2017,
-  malibu2018,
   terrain2017,
 } from './data/vehicles'
 
@@ -65,7 +64,6 @@ const inventory = [
   cruze2016,
   terrain2017,
   impala2017,
-  malibu2018,
   escape2016,
 ].map((vehicle) => ({
   ...vehicle,

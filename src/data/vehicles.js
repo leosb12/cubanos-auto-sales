@@ -104,59 +104,6 @@ export const impala2017 = {
   ],
 }
 
-export const malibu2018 = {
-  id: 3,
-  slug: '2018-chevrolet-malibu-ls',
-  model: '2018 Chevrolet Malibu',
-  price: '$8,750 Cash',
-  miles: '92,500 mi',
-  fuel: 'Gasoline',
-  drivetrain: 'FWD',
-  transmission: 'Automatic',
-  engine: '4-Cylinder',
-  title: 'Rebuilt Title',
-  coverImage: imagePath('/2018-chevrolet-malibu-ls', 'hero-front.jpg'),
-  gallery: [
-    imagePath('/2018-chevrolet-malibu-ls', 'hero-front.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'front-view.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'front-three-quarter.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'driver-side-profile.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'passenger-side-profile.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'rear-view.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'rear-view-angle.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'rear-three-quarter.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'interior-front-cabin.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'interior-center-console.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'interior-rear-seats.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'interior-rear-detail.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'instrument-cluster.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'steering-wheel-detail.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'engine-bay.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'engine-bay-detail.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'wheel-detail.jpg'),
-    imagePath('/2018-chevrolet-malibu-ls', 'trunk-compartment.jpg'),
-  ],
-  highlights: [
-    'Only 92,500 actual miles verified by Carfax',
-    'Remote start, Bluetooth, Apple CarPlay, and Android Auto',
-    'Backup camera and practical daily-driver comfort',
-    'Clean, well-maintained cabin ready for its next owner',
-    'Strong value at a fixed cash price with full transparency',
-  ],
-  description:
-    'This 2018 Chevrolet Malibu is a beautiful, exceptionally clean sedan offered at an aggressive cash price. With only 92,500 actual miles according to Carfax, it combines modern tech and dependable daily performance with features like remote start, Bluetooth, Apple CarPlay, Android Auto, and a backup camera.',
-  disclosure:
-    'The title is rebuilt from a previous minor front-end collision. The repair included new headlights and a new front bumper. The vehicle is priced accordingly, sold as a fixed cash deal, and available for an in-person test drive.',
-  technicalSpecs: [
-    { label: 'EPA Combined MPG', value: '30 MPG' },
-    { label: 'EPA City / Hwy', value: '27 / 36 MPG' },
-    { label: 'Estimated EPA Range', value: '474 miles' },
-    { label: 'Estimated Fuel Cost / Year', value: '$1,450' },
-    { label: 'Fuel Recommendation', value: 'Regular Gasoline' },
-    { label: 'Passenger Capacity', value: '5 Passengers' },
-  ],
-}
-
 export const escape2016 = {
   id: 5,
   slug: '2016-ford-escape-se',
