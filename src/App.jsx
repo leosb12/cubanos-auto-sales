@@ -4,15 +4,7 @@ import './App.css'
 import CachedImage from './components/CachedImage'
 import VehicleDetailPage from './pages/VehicleDetailPage'
 import { preloadImages } from './services/imageCache'
-import {
-  cadillacSrx2013,
-  charger2019,
-  cruze2016,
-  equinox2018,
-  escape2016,
-  impala2017,
-  terrain2017,
-} from './data/vehicles'
+import { availableVehicles } from './data/vehicles'
 
 const menu = [
   { label: 'Inventory', href: '#inventory' },
@@ -57,15 +49,7 @@ const inferBodyType = (model) => {
   return 'Other'
 }
 
-const inventory = [
-  equinox2018,
-  charger2019,
-  cadillacSrx2013,
-  cruze2016,
-  terrain2017,
-  impala2017,
-  escape2016,
-].map((vehicle) => ({
+const inventory = availableVehicles.map((vehicle) => ({
   ...vehicle,
   year: extractYear(vehicle.model),
   bodyType: inferBodyType(vehicle.model),
@@ -444,13 +428,16 @@ function HomePage() {
             <div className="mb-10 flex items-end justify-between gap-6">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">Inventory</p>
-                <h2 className="section-title-pop font-display text-5xl leading-none text-slate-950 sm:text-6xl">Available Vehicles</h2>
+                <h2 className="section-title-pop font-display text-5xl leading-none text-slate-950 sm:text-6xl">Inventory</h2>
               </div>
-              <a href="#contact" className="cta-secondary hidden rounded-full px-5 py-2.5 text-sm font-bold sm:inline-flex">
-                Request Full List
-              </a>
+              {inventory.length > 0 && (
+                <a href="#contact" className="cta-secondary hidden rounded-full px-5 py-2.5 text-sm font-bold sm:inline-flex">
+                  Request Full List
+                </a>
+              )}
             </div>
 
+            {inventory.length > 0 && (
             <div className="card-kinetic mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-300/15 sm:p-5">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -629,6 +616,7 @@ function HomePage() {
                 </label>
               </div>
             </div>
+            )}
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filteredInventory.map((car, index) => (
@@ -693,7 +681,17 @@ function HomePage() {
               ))}
             </div>
 
-            {filteredInventory.length === 0 && (
+            {inventory.length === 0 ? (
+              <div className="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center shadow-lg shadow-slate-300/15 sm:px-10">
+                <h3 className="font-display text-4xl text-slate-950 sm:text-5xl">New vehicles coming soon</h3>
+                <p className="mx-auto mt-3 max-w-xl text-base text-slate-600">
+                  We’re currently updating our inventory. Check back soon or contact us for upcoming availability.
+                </p>
+                <a href="#contact" className="cta-primary mt-6 inline-flex rounded-full px-6 py-3 text-sm font-bold">
+                  Contact us
+                </a>
+              </div>
+            ) : filteredInventory.length === 0 && (
               <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-lg shadow-slate-300/15">
                 <p className="text-lg font-bold text-slate-900">No vehicles match your current filters.</p>
                 <p className="mt-2 text-sm text-slate-600">Try adjusting title, price range, mileage, or model search.</p>

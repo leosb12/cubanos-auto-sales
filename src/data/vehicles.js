@@ -367,3 +367,6 @@ export const equinox2018 = {
   ],
 }
 
+// Add vehicle objects here when they are available for sale again.
+export const availableVehicles = []
+

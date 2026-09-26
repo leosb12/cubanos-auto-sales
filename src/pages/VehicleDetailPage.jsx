@@ -1,18 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import CachedImage from '../components/CachedImage'
-import { cadillacSrx2013, charger2019, cruze2016, equinox2018, escape2016, impala2017, terrain2017 } from '../data/vehicles'
+import { availableVehicles } from '../data/vehicles'
 import { preloadImages } from '../services/imageCache'
 
-const vehiclesBySlug = {
-  [terrain2017.slug]: terrain2017,
-  [impala2017.slug]: impala2017,
-  [escape2016.slug]: escape2016,
-  [cruze2016.slug]: cruze2016,
-  [cadillacSrx2013.slug]: cadillacSrx2013,
-  [charger2019.slug]: charger2019,
-  [equinox2018.slug]: equinox2018,
-}
+const vehiclesBySlug = Object.fromEntries(availableVehicles.map((vehicle) => [vehicle.slug, vehicle]))
 
 function VehicleDetailPage() {
   const { slug } = useParams()
