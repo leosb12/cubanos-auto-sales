@@ -5,6 +5,8 @@ import CachedImage from './components/CachedImage'
 import VehicleDetailPage from './pages/VehicleDetailPage'
 import { preloadImages } from './services/imageCache'
 import { availableVehicles } from './data/vehicles'
+import { incomingVehicles } from './data/incomingVehicles'
+import { lenders } from './data/lenders'
 
 const menu = [
   { label: 'Inventory', href: '#inventory' },
@@ -58,6 +60,17 @@ const inventory = availableVehicles.map((vehicle) => ({
   milesValue: parseMiles(vehicle.miles),
 }))
 
+const formatPrice = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+})
+const formatNumber = new Intl.NumberFormat('en-US')
+const incomingVehicleName = (vehicle) =>
+  [vehicle.year, vehicle.make, vehicle.model, vehicle.trim].filter(Boolean).join(' ')
+const incomingInquiryHref = (name) =>
+  `https://wa.me/12707919549?text=${encodeURIComponent(`Hello, I'm interested in the ${name} that's coming soon. Could you share more information?`)}`
+
 const benefits = [
   {
     title: 'Transparent Pricing',
@@ -65,7 +78,7 @@ const benefits = [
   },
   {
     title: 'Financing Guidance',
-    text: 'We help you compare options so you can choose a plan that fits your budget.',
+    text: 'Explore independent lenders and apply directly with the financial institution you choose.',
   },
   {
     title: 'Inspected Inventory',
@@ -125,21 +138,11 @@ function IconCar({ className = '' }) {
   )
 }
 
-function IconShield({ className = '' }) {
+function IconExternalLink({ className = '' }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path d="M12 3l7 3.2v5.8c0 4.8-2.9 7.8-7 9.9-4.1-2.1-7-5.1-7-9.9V6.2L12 3z" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function IconBank({ className = '' }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path d="M3 9l9-5 9 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M5 10v7M9 10v7M15 10v7M19 10v7" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M3 20h18" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path d="M13 5h6v6M19 5l-9 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M19 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -366,15 +369,15 @@ function HomePage() {
                 CUBAN STYLE
               </h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg lg:mx-0 mx-auto">
-                Bold inventory, clear numbers, and fast approvals. A modern sales experience inspired by Cuban color and confidence.
+                Bold inventory and clear numbers. Explore vehicles here, then review financing options directly with independent lenders.
               </p>
 
               <div className="mt-7 flex flex-wrap justify-center gap-3 lg:justify-start">
                 <a href="#inventory" className="cta-primary rounded-full px-6 py-3 text-sm font-bold shadow-lg shadow-blue-900/20">
                   Explore Inventory
                 </a>
-                <a href="#contact" className="cta-secondary rounded-full px-6 py-3 text-sm font-bold">
-                  Get Pre-Approved
+                <a href="#financing" className="cta-secondary rounded-full px-6 py-3 text-sm font-bold">
+                  Explore Financing
                 </a>
               </div>
 
@@ -384,8 +387,8 @@ function HomePage() {
                   <p className="hero-v2-metric-label">Transparent Deals</p>
                 </div>
                 <div className="hero-v2-metric reveal-delay-2">
-                  <p className="hero-v2-metric-value">24H</p>
-                  <p className="hero-v2-metric-label">Fast Approval</p>
+                  <p className="hero-v2-metric-value">OPTIONS</p>
+                  <p className="hero-v2-metric-label">Independent Lenders</p>
                 </div>
                 <div className="hero-v2-metric reveal-delay-3">
                   <p className="hero-v2-metric-value">TRADE-IN</p>
@@ -682,13 +685,13 @@ function HomePage() {
             </div>
 
             {inventory.length === 0 ? (
-              <div className="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center shadow-lg shadow-slate-300/15 sm:px-10">
-                <h3 className="font-display text-4xl text-slate-950 sm:text-5xl">New vehicles coming soon</h3>
-                <p className="mx-auto mt-3 max-w-xl text-base text-slate-600">
-                  We’re currently updating our inventory. Check back soon or contact us for upcoming availability.
-                </p>
-                <a href="#contact" className="cta-primary mt-6 inline-flex rounded-full px-6 py-3 text-sm font-bold">
-                  Contact us
+              <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-5 shadow-lg shadow-slate-300/15 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-950">No vehicles available right now</h3>
+                  <p className="mt-1 text-sm text-slate-600">Browse the incoming vehicles below or contact us about what’s on the way.</p>
+                </div>
+                <a href="#contact" className="cta-secondary inline-flex min-h-11 shrink-0 items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold">
+                  Contact Us
                 </a>
               </div>
             ) : filteredInventory.length === 0 && (
@@ -697,25 +700,125 @@ function HomePage() {
                 <p className="mt-2 text-sm text-slate-600">Try adjusting title, price range, mileage, or model search.</p>
               </div>
             )}
+
+            <div className="mt-12 border-t border-slate-200 pt-10 sm:mt-14 sm:pt-12">
+              <div className="mb-7 max-w-2xl">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-600">Coming Soon</p>
+                <h3 className="section-title-pop mt-1 font-display text-4xl leading-none text-slate-950 sm:text-5xl">Incoming Inventory</h3>
+                <p className="mt-4 text-base leading-relaxed text-slate-600">
+                  More vehicles are on the way. Browse the incoming inventory and ask us for details before they arrive.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {incomingVehicles.map((car, index) => {
+                  const name = incomingVehicleName(car)
+
+                  return (
+                    <article key={car.id} className={`incoming-card reveal card-kinetic flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-300/20 ${index % 3 === 1 ? 'reveal-delay-1' : index % 3 === 2 ? 'reveal-delay-2' : ''}`}>
+                      <div className="incoming-card-visual">
+                        <span className="incoming-status">{car.status === 'coming-soon' ? 'Coming Soon' : car.status}</span>
+                        <span className="incoming-visual-mark" aria-hidden="true">{car.year ?? car.model}</span>
+                        <div className="incoming-photo-message">
+                          <IconCar className="h-11 w-11" />
+                          <p>Photos Coming Soon</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-1 flex-col p-5">
+                        <h4 className="text-xl font-bold leading-tight text-slate-950 sm:text-2xl">{name}</h4>
+                        <p className="mt-3 text-3xl font-extrabold leading-none text-slate-900">{formatPrice.format(car.price)}</p>
+                        <ul className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-slate-700" aria-label={`${name} details`}>
+                          <li className="incoming-spec">{formatNumber.format(car.mileage)} mi</li>
+                          {car.engine && <li className="incoming-spec">{car.engine}</li>}
+                          <li className="incoming-spec">{car.exteriorColor} exterior</li>
+                        </ul>
+                        <p className={`incoming-title-badge mt-4 ${car.titleStatus === 'Clean Title' ? 'incoming-title-clean' : 'incoming-title-rebuilt'}`}>
+                          {car.titleStatus}
+                        </p>
+                        <div className="mt-auto pt-5">
+                          <a
+                            href={incomingInquiryHref(name)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Ask about the ${name} on WhatsApp (opens in a new tab)`}
+                            className="cta-primary incoming-inquiry w-full"
+                          >
+                            Ask About This Vehicle <span aria-hidden="true">→</span>
+                          </a>
+                        </div>
+                      </div>
+                    </article>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </section>
 
-        <section id="financing" className="border-y border-slate-200 bg-white py-16 sm:py-20">
-          <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
-            <div className="reveal card-kinetic cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <IconBank className="h-9 w-9 text-blue-700" />
-              <h3 className="mt-4 text-xl font-bold text-slate-900">Financing Support</h3>
-              <p className="mt-2 text-slate-600">From first-time buyers to rebuild credit cases, we guide your approval process step by step.</p>
+        <section id="financing" aria-labelledby="financing-heading" className="financing-section border-y border-slate-200 bg-white py-16 sm:py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="financing-intro">
+              <div className="reveal">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">Financing Options</p>
+                <h2 id="financing-heading" className="section-title-pop mt-2 font-display text-5xl leading-none text-slate-950 sm:text-6xl">
+                  Need Financing?<br />Explore Your Options.
+                </h2>
+              </div>
+              <div className="reveal reveal-delay-1 financing-intro-copy">
+                <p className="text-base leading-relaxed text-slate-700 sm:text-lg">
+                  Financing may be available through independent financial institutions. Review the lenders below to learn more about their auto loan options, eligibility requirements and application process.
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                  Customers apply directly with the lender. All approvals and financing terms are determined by the financial institution.
+                </p>
+              </div>
             </div>
-            <div className="reveal reveal-delay-1 card-kinetic cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <IconShield className="h-9 w-9 text-red-600" />
-              <h3 className="mt-4 text-xl font-bold text-slate-900">Verified Vehicle History</h3>
-              <p className="mt-2 text-slate-600">Transparent records and straightforward paperwork so every decision is informed.</p>
+
+            <div className="financing-lenders" aria-label="Independent lender options">
+              {lenders.map((lender, index) => (
+                <article key={lender.name} className="financing-lender reveal">
+                  <div className="financing-lender-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
+                  <div className="financing-lender-details">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700">Independent Lender</p>
+                    <h3 className="mt-2 text-xl font-bold leading-tight text-slate-950 sm:text-2xl">{lender.name}</h3>
+                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">{lender.description}</p>
+                  </div>
+                  <div className="financing-lender-actions">
+                    {lender.verified ? (
+                      <>
+                        <a
+                          href={lender.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`View auto financing at ${lender.name} (opens lender website in a new tab)`}
+                          className="cta-secondary financing-lender-link"
+                        >
+                          View Auto Financing <IconExternalLink className="h-4 w-4 shrink-0" />
+                        </a>
+                        <a href={`tel:${lender.phone}`} aria-label={`Call ${lender.name} at ${lender.displayPhone}`} className="financing-phone-link">
+                          Call {lender.displayPhone}
+                        </a>
+                      </>
+                    ) : (
+                      <a href="#contact" className="cta-secondary financing-lender-link">Contact Us</a>
+                    )}
+                  </div>
+                </article>
+              ))}
             </div>
-            <div className="reveal reveal-delay-2 card-kinetic cuba-accent-border rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <IconCar className="h-9 w-9 text-slate-900" />
-              <h3 className="mt-4 text-xl font-bold text-slate-900">Trade-In Ready</h3>
-              <p className="mt-2 text-slate-600">Bring your current car for appraisal and reduce your upfront cost immediately.</p>
+
+            <p className="financing-disclaimer">
+              Financing is provided by independent financial institutions and is subject to lender approval, eligibility requirements, vehicle qualifications and individual lender terms. Cubanos Auto Sales does not determine credit approval, rates or loan terms.
+            </p>
+
+            <div className="financing-contact">
+              <div>
+                <h3 className="font-display text-3xl leading-none text-white sm:text-4xl">Have Questions About a Vehicle?</h3>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-200 sm:text-base">
+                  Contact our team for the vehicle information you may need during the financing process.
+                </p>
+              </div>
+              <a href="#contact" className="cta-primary financing-contact-link">Contact Us</a>
             </div>
           </div>
         </section>
