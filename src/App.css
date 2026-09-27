@@ -197,6 +197,12 @@ select:disabled,
 	animation: reveal 700ms ease-out both;
 }
 
+.hero-v2-picture {
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+
 .hero-v2-image-placeholder {
 	position: absolute;
 	inset: 0;

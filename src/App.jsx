@@ -4,6 +4,7 @@ import './App.css'
 import CachedImage from './components/CachedImage'
 import VehicleDetailPage from './pages/VehicleDetailPage'
 import { preloadImages } from './services/imageCache'
+import { getVehicleCardImage } from './services/imageVariants'
 import { availableVehicles } from './data/vehicles'
 import { incomingVehicles } from './data/incomingVehicles'
 import { lenders } from './data/lenders'
@@ -11,7 +12,7 @@ import { lenders } from './data/lenders'
 const menu = [
   { label: 'Inventory', href: '#inventory' },
   { label: 'Financing', href: '#financing' },
-  { label: 'Cuban Legacy', href: '#heritage' },
+  { label: 'About Us', href: '#about' },
   { label: 'Why Us', href: '#why-us' },
   { label: 'Contact', href: '#contact' },
 ]
@@ -83,21 +84,6 @@ const benefits = [
   {
     title: 'Inspected Inventory',
     text: 'Each vehicle is reviewed before listing so you can buy with confidence.',
-  },
-]
-
-const heritage = [
-  {
-    title: 'Cuban Spirit, Professional Service',
-    text: 'Warm, direct attention with a modern, no-pressure sales process from start to finish.',
-  },
-  {
-    title: 'Authentic Flag-Inspired Design',
-    text: 'Blue stripes, red triangle, and white star translated into a clean premium dealership aesthetic.',
-  },
-  {
-    title: 'Built for Bowling Green',
-    text: 'Local trust, transparent pricing, and real support for drivers across the community.',
   },
 ]
 
@@ -299,7 +285,7 @@ function HomePage() {
         <div className="cuba-flag-ribbon" aria-hidden="true"></div>
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <a href="#top" className="flex items-center gap-3">
-            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales & Repair LLC logo" className="h-10 w-10 rounded-md" />
+            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales & Repair LLC logo" width="180" height="180" className="h-10 w-10 rounded-md" />
             <div>
               <p className="font-display text-3xl leading-6 text-slate-900">Cubanos Auto Sales</p>
               <p className="text-xs font-semibold tracking-[0.12em] text-blue-700">&amp; REPAIR LLC</p>
@@ -315,9 +301,6 @@ function HomePage() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <span className="hidden items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.11em] text-slate-700 md:inline-flex">
-              <IconStar className="h-3.5 w-3.5 text-red-600" /> Cuba Inspired
-            </span>
             <a href="tel:+12705991187" className="cta-primary pulse-soft hidden rounded-full px-5 py-2 text-sm font-bold shadow-lg shadow-blue-900/20 sm:inline-flex">
               Call Sales
             </a>
@@ -400,30 +383,28 @@ function HomePage() {
             <div className="reveal reveal-delay-1 relative z-10 order-1 lg:order-2">
               <div className="hero-v2-frame">
                 {isHeroImageLoading && <div className="hero-v2-image-placeholder" aria-hidden="true"></div>}
-                <img
-                  src="/bannercubanos.png"
-                  alt="Classic Cuban car by the seaside"
-                  className={`hero-v2-image ${isHeroImageLoading ? '' : 'is-loaded'}`}
-                  fetchPriority="high"
-                  loading="eager"
-                  decoding="async"
-                  onLoad={() => setIsHeroImageLoading(false)}
-                />
+                <picture className="hero-v2-picture">
+                  <source
+                    type="image/webp"
+                    srcSet="/optimized/v1/hero-cubanos-640.webp 640w, /optimized/v1/hero-cubanos-1200.webp 1200w, /optimized/v1/hero-cubanos-1920.webp 1920w"
+                    sizes="(min-width: 1024px) 590px, calc(100vw - 2rem)"
+                  />
+                  <img
+                    src="/bannercubanos.png"
+                    alt="Classic Cuban car by the seaside"
+                    width="1920"
+                    height="1072"
+                    className={`hero-v2-image ${isHeroImageLoading ? '' : 'is-loaded'}`}
+                    fetchPriority="high"
+                    loading="eager"
+                    decoding="async"
+                    onLoad={() => setIsHeroImageLoading(false)}
+                  />
+                </picture>
               </div>
             </div>
           </div>
           <div className="cuba-stripes" aria-hidden="true"></div>
-        </section>
-
-        <section className="cuba-night py-8 text-white">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 sm:grid-cols-3 sm:px-6 lg:px-8">
-            {stats.map((item, idx) => (
-              <div key={item.label} className={`reveal rounded-xl border border-white/15 bg-white/5 p-5 text-center ${idx === 1 ? 'reveal-delay-1' : idx === 2 ? 'reveal-delay-2' : ''}`}>
-                <p className="font-display text-5xl leading-none text-white">{item.value}</p>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-[0.1em] text-slate-300">{item.label}</p>
-              </div>
-            ))}
-          </div>
         </section>
 
         <section id="inventory" className="section-ambient py-16 sm:py-20 bg-gradient-to-b from-slate-50 to-white">
@@ -627,13 +608,13 @@ function HomePage() {
                   <div className="relative h-44 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white">
                     {car.coverImage && (
                       <CachedImage
-                        src={car.coverImage}
+                        {...getVehicleCardImage(car.coverImage)}
                         alt={`${car.model} portada`}
                         className="absolute inset-0"
                         imgClassName="h-full w-full object-cover"
                         loading="lazy"
                         decoding="async"
-                        sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+                        sizes="(min-width: 1280px) 390px, (min-width: 768px) 46vw, calc(100vw - 2rem)"
                       />
                     )}
                     <div className="absolute inset-0 bg-slate-950/40" aria-hidden="true"></div>
@@ -823,34 +804,28 @@ function HomePage() {
           </div>
         </section>
 
-        <section id="heritage" className="relative overflow-hidden bg-slate-50 py-16 sm:py-20">
+        <section id="about" aria-labelledby="about-heading" className="relative scroll-mt-20 bg-slate-50 py-16 sm:py-20">
           <div className="absolute inset-x-0 top-0 h-px bg-slate-200" aria-hidden="true"></div>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="relative z-10 mb-10 grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-              <div className="max-w-3xl">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-600">Cuban Design Language</p>
-                <h2 className="section-title-pop font-display text-5xl leading-none text-slate-950 sm:text-6xl">Cuban Identity, Clean Execution</h2>
-                <p className="mt-4 text-slate-700">
-                  The visual system is inspired by the Cuban flag and modernized for a premium auto sales brand. Strong colors, clear hierarchy, and refined spacing.
+            <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-16">
+              <div className="reveal max-w-3xl">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-600">About Cubanos Auto Sales</p>
+                <h2 id="about-heading" className="section-title-pop mt-2 font-display text-5xl leading-none text-slate-950 sm:text-6xl">Serving Bowling Green for 12+ Years</h2>
+                <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-700 sm:text-lg">
+                  Cubanos Auto Sales &amp; Repair LLC has served drivers in Bowling Green, Kentucky for more than 12 years. We share vehicle details, including pricing, mileage, and title status, so you can see what is available and ask us directly about a car.
                 </p>
+                <a href="#inventory" className="mt-6 inline-flex min-h-11 items-center border-b border-blue-700 text-sm font-bold text-blue-700 transition hover:text-blue-900">
+                  Browse Inventory <span className="ml-3" aria-hidden="true">→</span>
+                </a>
               </div>
-              <div className="cuba-flag-card">
-                <div className="cuba-flag-stripes"></div>
-                <div className="cuba-flag-triangle">
-                  <IconStar className="h-8 w-8 text-white" />
-                </div>
-              </div>
-            </div>
-            <div className="relative z-10 grid gap-6 md:grid-cols-3">
-              {heritage.map((item, idx) => (
-                <article key={item.title} className={`reveal card-kinetic rounded-2xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-300/20 ${idx === 1 ? 'reveal-delay-1' : idx === 2 ? 'reveal-delay-2' : ''}`}>
-                  <div className="mb-4 inline-flex rounded-xl bg-red-50 p-2 text-red-600">
-                    <IconStar className="h-5 w-5" />
+              <div className="reveal reveal-delay-1 border-t-2 border-blue-700" aria-label="Dealership facts">
+                {stats.map((item) => (
+                  <div key={item.label} className="flex items-baseline justify-between gap-5 border-b border-slate-300 py-5 sm:py-6">
+                    <p className="font-display text-5xl leading-none text-slate-950 sm:text-6xl">{item.value}</p>
+                    <p className="text-right text-xs font-bold uppercase tracking-[0.1em] text-slate-600 sm:text-sm">{item.label}</p>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-slate-600">{item.text}</p>
-                </article>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -868,6 +843,10 @@ function HomePage() {
                   <img
                     src="/cubanos%20sales.jpg"
                     alt="Cubanos Auto Sales storefront in Bowling Green"
+                    width="1200"
+                    height="900"
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/35 to-transparent" aria-hidden="true"></div>

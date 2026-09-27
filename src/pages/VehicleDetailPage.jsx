@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import CachedImage from '../components/CachedImage'
 import { availableVehicles } from '../data/vehicles'
 import { preloadImages } from '../services/imageCache'
+import { getVehicleThumbnailImage } from '../services/imageVariants'
 
 const vehiclesBySlug = Object.fromEntries(availableVehicles.map((vehicle) => [vehicle.slug, vehicle]))
 
@@ -57,7 +58,7 @@ function VehicleDetailPage() {
       return undefined
     }
 
-    return preloadImages([vehicle.coverImage, ...(vehicle.gallery || [])], {
+    return preloadImages([vehicle.coverImage, ...(vehicle.gallery || []).slice(0, 2)], {
       idle: true,
     })
   }, [vehicle])
@@ -74,7 +75,7 @@ function VehicleDetailPage() {
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link to="/" className="flex items-center gap-3">
-            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales & Repair LLC logo" className="h-10 w-10 rounded-md" />
+            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales & Repair LLC logo" width="180" height="180" className="h-10 w-10 rounded-md" />
             <div>
               <p className="font-display text-3xl leading-6 text-slate-900">Cubanos Auto Sales</p>
               <p className="text-xs font-semibold tracking-[0.12em] text-blue-700">&amp; REPAIR LLC</p>
@@ -110,12 +111,15 @@ function VehicleDetailPage() {
                   key={`${vehicle.slug}-${image}`}
                   type="button"
                   onClick={() => setSelectedImage({ slug, src: image })}
+                  onMouseEnter={() => preloadImages([image], { idle: false })}
+                  onFocus={() => preloadImages([image], { idle: false })}
+                  onTouchStart={() => preloadImages([image], { idle: false })}
                   className={`overflow-hidden rounded-lg border ${activeImage === image ? 'border-blue-700' : 'border-slate-300'} bg-white`}
                   aria-label={`View image ${idx + 1}`}
                   aria-pressed={activeImage === image}
                 >
                   <CachedImage
-                    src={image}
+                    {...getVehicleThumbnailImage(image)}
                     alt={`${vehicle.model} ${idx + 1}`}
                     className="aspect-[4/3] w-full"
                     imgClassName="h-full w-full object-cover"

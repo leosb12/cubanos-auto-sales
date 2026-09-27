@@ -1,39 +1,23 @@
-import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { useState } from 'react'
 import './CachedImage.css'
-import { DEFAULT_FALLBACK_IMAGE, getImageCacheEntry, loadImage } from '../services/imageCache'
+import { DEFAULT_FALLBACK_IMAGE, getImageCacheEntry, rememberLoadedImage } from '../services/imageCache'
 
 const joinClasses = (...values) => values.filter(Boolean).join(' ')
 
 const getVisualState = (src, fallbackSrc) => {
-  if (!src) {
-    return {
-      status: 'error',
-      displaySrc: fallbackSrc,
-      isFallback: true,
-    }
-  }
+  const cacheEntry = src ? getImageCacheEntry(src) : null
 
-  const cacheEntry = getImageCacheEntry(src)
-
-  if (cacheEntry?.status === 'loaded') {
+  if (!src || cacheEntry?.status === 'error') {
     return {
-      status: 'loaded',
-      displaySrc: cacheEntry.resolvedSrc || src,
-      isFallback: false,
-    }
-  }
-
-  if (cacheEntry?.status === 'error') {
-    return {
-      status: 'error',
+      status: 'loading',
       displaySrc: fallbackSrc,
       isFallback: true,
     }
   }
 
   return {
-    status: 'loading',
-    displaySrc: '',
+    status: cacheEntry?.status === 'loaded' ? 'loaded' : 'loading',
+    displaySrc: src,
     isFallback: false,
   }
 }
@@ -48,133 +32,49 @@ function CachedImage({
   loading = 'lazy',
   decoding = 'async',
   fetchPriority = 'auto',
+  srcSet,
   sizes,
   draggable = false,
   onLoad,
   onError,
 }) {
-  const rootRef = useRef(null)
-  const cacheState = getVisualState(src, fallbackSrc)
-  const cacheStateKey = `${src || ''}::${fallbackSrc}`
-  const [asyncState, setAsyncState] = useState(() => ({
-    key: cacheStateKey,
-    ...cacheState,
+  const stateKey = `${src || ''}::${fallbackSrc}`
+  const [imageState, setImageState] = useState(() => ({
+    key: stateKey,
+    ...getVisualState(src, fallbackSrc),
   }))
-  const [isIntersecting, setIsIntersecting] = useState(() => loading !== 'lazy')
+  const visualState = imageState.key === stateKey
+    ? imageState
+    : { key: stateKey, ...getVisualState(src, fallbackSrc) }
 
-  const emitLoad = useEffectEvent((payload) => {
-    onLoad?.(payload)
-  })
-
-  const emitError = useEffectEvent((payload) => {
-    onError?.(payload)
-  })
-
-  const supportsIntersectionObserver =
-    typeof window !== 'undefined' && 'IntersectionObserver' in window
-  const shouldLoad =
-    loading !== 'lazy' ||
-    cacheState.status !== 'loading' ||
-    isIntersecting ||
-    !supportsIntersectionObserver
-  const visualState = asyncState.key === cacheStateKey ? asyncState : { key: cacheStateKey, ...cacheState }
-
-  useEffect(() => {
-    if (loading !== 'lazy' || shouldLoad || cacheState.status !== 'loading' || !supportsIntersectionObserver) {
-      return undefined
+  const handleLoad = (event) => {
+    const resolvedSrc = event.currentTarget.currentSrc || visualState.displaySrc
+    if (resolvedSrc === new URL(visualState.displaySrc, window.location.href).href) {
+      rememberLoadedImage(visualState.displaySrc, resolvedSrc)
     }
+    setImageState({ ...visualState, status: 'loaded' })
+    onLoad?.({ src, resolvedSrc })
+  }
 
-    const target = rootRef.current
+  const handleError = () => {
+    const error = new Error(`Failed to load image: ${visualState.displaySrc}`)
+    onError?.({ src, fallbackSrc, error })
 
-    if (!target) {
-      return undefined
+    if (!visualState.isFallback && fallbackSrc && fallbackSrc !== src) {
+      setImageState({ key: stateKey, status: 'loading', displaySrc: fallbackSrc, isFallback: true })
+    } else {
+      setImageState({ key: stateKey, status: 'error', displaySrc: '', isFallback: true })
     }
+  }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setIsIntersecting(true)
-          observer.disconnect()
-        }
-      },
-      {
-        rootMargin: '240px 0px',
-        threshold: 0.01,
-      }
-    )
-
-    observer.observe(target)
-
-    return () => observer.disconnect()
-  }, [loading, shouldLoad, cacheState.status, supportsIntersectionObserver])
-
-  useEffect(() => {
-    if (!src || !shouldLoad || cacheState.status !== 'loading') {
-      return undefined
-    }
-
-    let isActive = true
-
-    loadImage(src)
-      .then((entry) => {
-        if (!isActive) {
-          return
-        }
-
-        const resolvedSrc = entry.resolvedSrc || src
-
-        setAsyncState({
-          key: cacheStateKey,
-          status: 'loaded',
-          displaySrc: resolvedSrc,
-          isFallback: false,
-        })
-
-        emitLoad({
-          src,
-          resolvedSrc,
-        })
-      })
-      .catch((error) => {
-        if (!isActive) {
-          return
-        }
-
-        setAsyncState({
-          key: cacheStateKey,
-          status: 'error',
-          displaySrc: fallbackSrc,
-          isFallback: true,
-        })
-
-        emitError({
-          src,
-          fallbackSrc,
-          error,
-        })
-      })
-
-    return () => {
-      isActive = false
-    }
-  }, [src, fallbackSrc, shouldLoad, cacheState.status, cacheStateKey])
-
-  const statusClassName =
-    visualState.status === 'loaded'
-      ? 'cached-image--loaded'
-      : visualState.status === 'error'
-        ? 'cached-image--error'
-        : 'cached-image--loading'
-
-  const resolvedAlt = visualState.isFallback
-    ? alt
-      ? `${alt} image unavailable`
-      : 'Image unavailable'
+  const statusClassName = `cached-image--${visualState.status}`
+  const isUnavailable = visualState.isFallback && fallbackSrc === DEFAULT_FALLBACK_IMAGE
+  const resolvedAlt = isUnavailable
+    ? alt ? `${alt} image unavailable` : 'Image unavailable'
     : alt
 
   return (
     <div
-      ref={rootRef}
       className={joinClasses('cached-image', statusClassName, className)}
       aria-busy={visualState.status === 'loading'}
     >
@@ -182,21 +82,23 @@ function CachedImage({
         {visualState.status === 'loading' && (
           <div className={joinClasses('cached-image__skeleton', skeletonClassName)} aria-hidden="true" />
         )}
-
         {visualState.displaySrc && (
           <img
             src={visualState.displaySrc}
+            srcSet={visualState.isFallback ? undefined : srcSet}
+            sizes={sizes}
             alt={resolvedAlt}
             className={joinClasses(
               'cached-image__media',
-              visualState.isFallback && 'cached-image__media--fallback',
+              isUnavailable && 'cached-image__media--fallback',
               imgClassName
             )}
             decoding={decoding}
             fetchPriority={fetchPriority}
-            loading="eager"
-            sizes={sizes}
+            loading={loading}
             draggable={draggable}
+            onLoad={handleLoad}
+            onError={handleError}
           />
         )}
       </div>

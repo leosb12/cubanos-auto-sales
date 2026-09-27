@@ -73,6 +73,19 @@ export const getImageCacheEntry = (src) => {
   return touchEntry(key, entry)
 }
 
+export const rememberLoadedImage = (src, resolvedSrc) => {
+  const key = normalizeSrc(src)
+  if (!key) {
+    return
+  }
+
+  touchEntry(key, {
+    status: 'loaded',
+    resolvedSrc: resolvedSrc || key,
+    updatedAt: Date.now(),
+  })
+}
+
 export const loadImage = (src) => {
   const key = normalizeSrc(src)
 

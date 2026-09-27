@@ -33,7 +33,15 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- Performance -->
-    <link rel="preload" href="/preview.png" as="image" fetchpriority="high" />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/optimized/v1/hero-cubanos-1200.webp"
+      imagesrcset="/optimized/v1/hero-cubanos-640.webp 640w, /optimized/v1/hero-cubanos-1200.webp 1200w, /optimized/v1/hero-cubanos-1920.webp 1920w"
+      imagesizes="(min-width: 1024px) 590px, calc(100vw - 2rem)"
+      fetchpriority="high"
+    />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

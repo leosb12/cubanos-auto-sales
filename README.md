@@ -14,3 +14,9 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Image variants
+
+The original vehicle photos and hero PNG remain in `public/`. Smaller WebP files in `public/optimized/v1/` are checked in so the site needs no image processing package at runtime or during Vite builds.
+
+After adding or replacing vehicle photos, run `python scripts/generate_image_variants.py` with Pillow installed. When replacing an image at an existing URL, change the `v1` path in the script, `src/services/imageVariants.js`, `src/App.jsx`, and `index.html` before deployment. This keeps the long-lived Vercel cache from serving an older image.
