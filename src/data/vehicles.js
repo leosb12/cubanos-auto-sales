@@ -407,12 +407,12 @@ export const fordEdge2013 = {
     '2013 Ford Edge steering wheel and controls',
   ],
   description:
-    'This 2013 Ford Edge comes in silver with a black interior and 126,200 actual miles. It has a V6 engine, standard radio, and rear bumper sensors. According to the dealership, the engine, transmission, and body are in very good condition.',
+    'This 2013 Ford Edge comes in silver with a black interior and 126,200 miles. It features a V6 engine, standard radio, and rear bumper sensors. The engine, transmission, and body are in very good condition.',
   disclosure: 'Kentucky Rebuilt Title. Call 270-599-1187 for more information.',
   highlights: [
     'Silver exterior and black interior',
     'Standard radio and rear bumper sensors',
-    'Dealership describes the engine, transmission, and body as being in very good condition',
+    'Engine, transmission, and body in very good condition',
   ],
   technicalSpecs: [
     { label: 'Exterior', value: 'Silver' },

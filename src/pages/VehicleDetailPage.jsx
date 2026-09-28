@@ -161,7 +161,7 @@ function VehicleDetailPage() {
 
             <p className="text-sm leading-relaxed text-slate-700">{vehicle.description}</p>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+            {vehicle.slug !== '2013-ford-edge' && <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 rounded-full bg-blue-50 p-2 text-blue-700">
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
@@ -173,7 +173,7 @@ function VehicleDetailPage() {
                   <p className="mt-1 text-sm leading-relaxed text-slate-700">{vehicle.disclosure}</p>
                 </div>
               </div>
-            </div>
+            </div>}
 
             <ul className="space-y-2 text-sm text-slate-700">
               {vehicle.highlights.map((item) => (
