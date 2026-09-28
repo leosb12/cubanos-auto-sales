@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import CachedImage from '../components/CachedImage'
 import { availableVehicles } from '../data/vehicles'
 import { preloadImages } from '../services/imageCache'
-import { getVehicleThumbnailImage } from '../services/imageVariants'
+import { getVehicleDetailImage, getVehiclePreloadImage, getVehicleThumbnailImage } from '../services/imageVariants'
 
 const vehiclesBySlug = Object.fromEntries(availableVehicles.map((vehicle) => [vehicle.slug, vehicle]))
 
@@ -17,7 +17,11 @@ function VehicleDetailPage() {
   const activeImage =
     selectedImage.slug === slug && selectedImage.src
       ? selectedImage.src
-      : vehicle?.coverImage || vehicle?.gallery?.[0] || ''
+      : (vehicle?.status === 'available' ? vehicle?.gallery?.[0] : vehicle?.coverImage) || vehicle?.gallery?.[0] || ''
+  const activeImageIndex = vehicle?.gallery?.indexOf(activeImage) ?? -1
+  const activeImageAlt = activeImageIndex >= 0
+    ? vehicle?.galleryAlt?.[activeImageIndex] || `${vehicle?.model} photo ${activeImageIndex + 1}`
+    : vehicle?.coverAlt || vehicle?.model
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' })
@@ -58,7 +62,11 @@ function VehicleDetailPage() {
       return undefined
     }
 
-    return preloadImages([vehicle.coverImage, ...(vehicle.gallery || []).slice(0, 2)], {
+    const sources = vehicle.status === 'available'
+      ? (vehicle.gallery || []).slice(1, 2).map(getVehiclePreloadImage)
+      : [vehicle.coverImage, ...(vehicle.gallery || []).slice(0, 2)]
+
+    return preloadImages(sources, {
       idle: true,
     })
   }, [vehicle])
@@ -67,22 +75,24 @@ function VehicleDetailPage() {
     return <Navigate to="/" replace />
   }
 
-  const whatsappMessage = `Hello, I would like to receive more information about the ${vehicle.model}.`
+  const whatsappMessage = vehicle.inquiryMessage || `Hello, I would like to receive more information about the ${vehicle.model}.`
   const requestInfoWhatsAppHref = `https://wa.me/12707919549?text=${encodeURIComponent(whatsappMessage)}`
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900">
+    <div className="vehicle-detail-page min-h-screen bg-slate-100 text-slate-900">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-3">
-            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales & Repair LLC logo" width="180" height="180" className="h-10 w-10 rounded-md" />
-            <div>
-              <p className="font-display text-3xl leading-6 text-slate-900">Cubanos Auto Sales</p>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
+          <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <img src="/apple-touch-icon.png" alt="Cubanos Auto Sales & Repair LLC logo" width="180" height="180" className="h-8 w-8 shrink-0 rounded-md sm:h-10 sm:w-10" />
+            <div className="min-w-0">
+              <p className="font-display whitespace-nowrap text-xl leading-5 text-slate-900 sm:text-3xl sm:leading-6">Cubanos Auto Sales</p>
               <p className="text-xs font-semibold tracking-[0.12em] text-blue-700">&amp; REPAIR LLC</p>
             </div>
           </Link>
-          <Link to="/" className="cta-secondary rounded-full px-4 py-2 text-sm font-bold">
-            Back To Inventory
+          <Link to="/" aria-label="Back to Inventory" className="cta-secondary inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold sm:rounded-full sm:px-4 sm:text-sm sm:font-bold">
+            <span aria-hidden="true">←</span>
+            <span className="sm:hidden">Inventory</span>
+            <span className="hidden sm:inline">Back to Inventory</span>
           </Link>
         </div>
       </header>
@@ -93,10 +103,10 @@ function VehicleDetailPage() {
             <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-xl shadow-slate-400/20">
               <div className="aspect-[16/10] bg-slate-900">
                 <CachedImage
-                  src={activeImage}
-                  alt={vehicle.model}
+                  {...getVehicleDetailImage(activeImage)}
+                  alt={activeImageAlt}
                   className="h-full w-full"
-                  imgClassName="h-full w-full object-cover"
+                  imgClassName={`h-full w-full ${vehicle.status === 'available' ? 'object-contain' : 'object-cover'}`}
                   loading="eager"
                   decoding="async"
                   fetchPriority="high"
@@ -111,16 +121,16 @@ function VehicleDetailPage() {
                   key={`${vehicle.slug}-${image}`}
                   type="button"
                   onClick={() => setSelectedImage({ slug, src: image })}
-                  onMouseEnter={() => preloadImages([image], { idle: false })}
-                  onFocus={() => preloadImages([image], { idle: false })}
-                  onTouchStart={() => preloadImages([image], { idle: false })}
+                  onMouseEnter={() => preloadImages([getVehiclePreloadImage(image)], { idle: false })}
+                  onFocus={() => preloadImages([getVehiclePreloadImage(image)], { idle: false })}
+                  onTouchStart={() => preloadImages([getVehiclePreloadImage(image)], { idle: false })}
                   className={`overflow-hidden rounded-lg border ${activeImage === image ? 'border-blue-700' : 'border-slate-300'} bg-white`}
-                  aria-label={`View image ${idx + 1}`}
+                  aria-label={`View ${vehicle.galleryAlt?.[idx] || `image ${idx + 1}`}`}
                   aria-pressed={activeImage === image}
                 >
                   <CachedImage
                     {...getVehicleThumbnailImage(image)}
-                    alt={`${vehicle.model} ${idx + 1}`}
+                    alt={vehicle.galleryAlt?.[idx] || `${vehicle.model} photo ${idx + 1}`}
                     className="aspect-[4/3] w-full"
                     imgClassName="h-full w-full object-cover"
                     loading="lazy"
@@ -133,17 +143,20 @@ function VehicleDetailPage() {
           </div>
 
           <aside className="reveal reveal-delay-1 space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-400/15">
-            <p className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-blue-700">
-              Featured SUV
+            <p className="inline-flex items-center gap-1.5 self-start rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-700">
+              {vehicle.status === 'available' && <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" aria-hidden="true" />}
+              {vehicle.status === 'available' ? 'Available' : 'Featured SUV'}
             </p>
             <h1 className="font-display text-5xl leading-[0.92] text-slate-950 sm:text-6xl">{vehicle.model}</h1>
             <p className="text-4xl font-black text-blue-700">{vehicle.price}</p>
 
             <div className="grid grid-cols-2 gap-3 text-sm">
               {vehicle.miles && <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Mileage</p><p className="font-bold text-slate-900">{vehicle.miles}</p></div>}
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Engine</p><p className="font-bold text-slate-900">{vehicle.engine}</p></div>
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Drivetrain</p><p className="font-bold text-slate-900">{vehicle.drivetrain}</p></div>
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Title</p><p className="font-bold text-red-700">{vehicle.title}</p></div>
+              {vehicle.engine && <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Engine</p><p className="font-bold text-slate-900">{vehicle.engine}</p></div>}
+              {vehicle.drivetrain && <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Drivetrain</p><p className="font-bold text-slate-900">{vehicle.drivetrain}</p></div>}
+              {vehicle.exteriorColor && <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Exterior</p><p className="font-bold text-slate-900">{vehicle.exteriorColor}</p></div>}
+              {vehicle.interiorColor && <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Interior</p><p className="font-bold text-slate-900">{vehicle.interiorColor}</p></div>}
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3"><p className="text-slate-500">Title</p><p className="font-bold text-slate-900">{vehicle.title}</p></div>
             </div>
 
             <p className="text-sm leading-relaxed text-slate-700">{vehicle.description}</p>
@@ -181,7 +194,7 @@ function VehicleDetailPage() {
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-[11px] text-slate-500">EPA economy figures sourced from fueleconomy.gov for matching year/powertrain configurations.</p>
+              {vehicle.status !== 'available' && <p className="mt-3 text-[11px] text-slate-500">EPA economy figures sourced from fueleconomy.gov for matching year/powertrain configurations.</p>}
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
@@ -189,7 +202,7 @@ function VehicleDetailPage() {
               <a href={requestInfoWhatsAppHref} target="_blank" rel="noreferrer" className="cta-secondary rounded-xl px-4 py-3 text-center text-sm font-bold">Request Info</a>
             </div>
 
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Cash price only: no hidden fees, no price games.</p>
+            {vehicle.cashPriceOnly !== false && <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Cash price only: no hidden fees, no price games.</p>}
           </aside>
         </section>
       </main>

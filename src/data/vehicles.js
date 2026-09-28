@@ -367,6 +367,61 @@ export const equinox2018 = {
   ],
 }
 
-// Add vehicle objects here when they are available for sale again.
-export const availableVehicles = []
+const fordEdgeImage = (name) => `/optimized/v1/vehicles/2013-ford-edge/${name}-1600.webp`
+
+export const fordEdge2013 = {
+  id: '2013-ford-edge',
+  slug: '2013-ford-edge',
+  model: '2013 Ford Edge',
+  status: 'available',
+  price: '$5,900',
+  miles: '126,200 mi',
+  engine: 'V6',
+  exteriorColor: 'Silver',
+  interiorColor: 'Black',
+  title: 'Kentucky Rebuilt Title',
+  coverImage: fordEdgeImage('driver-side-profile'),
+  coverAlt: '2013 Ford Edge silver exterior driver-side view',
+  gallery: [
+    fordEdgeImage('hero-front'),
+    fordEdgeImage('front-view'),
+    fordEdgeImage('driver-side-profile'),
+    fordEdgeImage('rear-view'),
+    fordEdgeImage('passenger-side-profile'),
+    fordEdgeImage('driver-seat'),
+    fordEdgeImage('front-cabin'),
+    fordEdgeImage('rear-seats'),
+    fordEdgeImage('cargo-area'),
+    fordEdgeImage('steering-wheel'),
+  ],
+  galleryAlt: [
+    '2013 Ford Edge silver exterior front three-quarter view',
+    '2013 Ford Edge silver exterior front view',
+    '2013 Ford Edge silver exterior driver-side view',
+    '2013 Ford Edge silver exterior rear view with bumper sensors',
+    '2013 Ford Edge silver exterior passenger-side view',
+    '2013 Ford Edge black interior driver seat and cockpit',
+    '2013 Ford Edge black interior front cabin and standard radio',
+    '2013 Ford Edge black interior rear seats',
+    '2013 Ford Edge open cargo area',
+    '2013 Ford Edge steering wheel and controls',
+  ],
+  description:
+    'This 2013 Ford Edge comes in silver with a black interior and 126,200 actual miles. It has a V6 engine, standard radio, and rear bumper sensors. According to the dealership, the engine, transmission, and body are in very good condition.',
+  disclosure: 'Kentucky Rebuilt Title. Call 270-599-1187 for more information.',
+  highlights: [
+    'Silver exterior and black interior',
+    'Standard radio and rear bumper sensors',
+    'Dealership describes the engine, transmission, and body as being in very good condition',
+  ],
+  technicalSpecs: [
+    { label: 'Exterior', value: 'Silver' },
+    { label: 'Interior', value: 'Black' },
+    { label: 'Title Status', value: 'Kentucky Rebuilt Title' },
+  ],
+  inquiryMessage: "I'm interested in the 2013 Ford Edge.",
+  cashPriceOnly: false,
+}
+
+export const availableVehicles = [fordEdge2013]
 

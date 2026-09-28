@@ -49,9 +49,7 @@ function CachedImage({
 
   const handleLoad = (event) => {
     const resolvedSrc = event.currentTarget.currentSrc || visualState.displaySrc
-    if (resolvedSrc === new URL(visualState.displaySrc, window.location.href).href) {
-      rememberLoadedImage(visualState.displaySrc, resolvedSrc)
-    }
+    rememberLoadedImage(visualState.displaySrc, resolvedSrc)
     setImageState({ ...visualState, status: 'loaded' })
     onLoad?.({ src, resolvedSrc })
   }

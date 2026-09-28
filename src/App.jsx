@@ -4,7 +4,7 @@ import './App.css'
 import CachedImage from './components/CachedImage'
 import VehicleDetailPage from './pages/VehicleDetailPage'
 import { preloadImages } from './services/imageCache'
-import { getVehicleCardImage } from './services/imageVariants'
+import { getVehicleCardImage, getVehiclePreloadImage } from './services/imageVariants'
 import { availableVehicles } from './data/vehicles'
 import { incomingVehicles } from './data/incomingVehicles'
 import { lenders } from './data/lenders'
@@ -41,7 +41,7 @@ const extractYear = (model) => {
 const inferBodyType = (model) => {
   const text = String(model || '').toLowerCase()
 
-  if (/(terrain|escape|envision|enclave|srx|suv)/.test(text)) {
+  if (/(terrain|escape|edge|envision|enclave|srx|suv)/.test(text)) {
     return 'SUV'
   }
 
@@ -273,6 +273,11 @@ function HomePage() {
   }, [filteredInventory])
 
   const preloadVehicleGallery = (car) => {
+    if (car.status === 'available') {
+      preloadImages((car.gallery || []).slice(0, 1).map(getVehiclePreloadImage), { idle: false })
+      return
+    }
+
     preloadImages([car.coverImage, ...(car.gallery || [])], {
       idle: false,
       limit: 6,
@@ -609,7 +614,7 @@ function HomePage() {
                     {car.coverImage && (
                       <CachedImage
                         {...getVehicleCardImage(car.coverImage)}
-                        alt={`${car.model} portada`}
+                        alt={car.coverAlt || `${car.model} exterior`}
                         className="absolute inset-0"
                         imgClassName="h-full w-full object-cover"
                         loading="lazy"
@@ -617,16 +622,21 @@ function HomePage() {
                         sizes="(min-width: 1280px) 390px, (min-width: 768px) 46vw, calc(100vw - 2rem)"
                       />
                     )}
-                    <div className="absolute inset-0 bg-slate-950/40" aria-hidden="true"></div>
+                    <div className={car.status === 'available' ? 'absolute inset-0 bg-gradient-to-b from-slate-950/45 via-transparent to-slate-950/60' : 'absolute inset-0 bg-slate-950/40'} aria-hidden="true"></div>
                     <div className="relative z-10 flex items-center justify-between">
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue-200">{car.title}</p>
-                      <IconCar className="h-6 w-6" />
+                      <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-100">{car.title}</p>
+                      {car.status === 'available' ? (
+                        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/70 bg-white/90 px-2 py-1 text-[10px] font-semibold leading-none text-slate-800">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" aria-hidden="true" />
+                          Available
+                        </span>
+                      ) : <IconCar className="h-6 w-6" />}
                     </div>
-                    <h3 className="relative z-10 mt-6 text-2xl font-bold leading-tight">{car.model}</h3>
+                    <h3 className={`z-10 text-2xl font-bold leading-tight ${car.status === 'available' ? 'absolute bottom-5 left-5 right-5' : 'relative mt-6'}`}>{car.model}</h3>
                   </div>
                   <div className="p-5">
                     <div className="mb-4 flex items-end justify-between">
-                      <p className="text-sm text-slate-500">Starting Price</p>
+                      <p className="text-sm text-slate-500">{car.status === 'available' ? 'Price' : 'Starting Price'}</p>
                       <p className="text-3xl font-extrabold text-slate-900">{car.price}</p>
                     </div>
                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -636,10 +646,14 @@ function HomePage() {
                           <p className="font-semibold text-slate-800">{car.miles}</p>
                         </div>
                       )}
-                      <div className="rounded-lg bg-slate-100 p-3">
-                        <p className="text-slate-500">Fuel Type</p>
-                        <p className="font-semibold text-slate-800">{car.fuel}</p>
-                      </div>
+                      {car.fuel && (
+                        <div className="rounded-lg bg-slate-100 p-3">
+                          <p className="text-slate-500">Fuel Type</p>
+                          <p className="font-semibold text-slate-800">{car.fuel}</p>
+                        </div>
+                      )}
+                      {car.engine && <div className="rounded-lg bg-slate-100 p-3"><p className="text-slate-500">Engine</p><p className="font-semibold text-slate-800">{car.engine}</p></div>}
+                      {car.exteriorColor && <div className="rounded-lg bg-slate-100 p-3"><p className="text-slate-500">Exterior</p><p className="font-semibold text-slate-800">{car.exteriorColor}</p></div>}
                     </div>
                     {car.slug ? (
                       <Link

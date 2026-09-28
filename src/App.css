@@ -919,7 +919,28 @@ select:disabled,
 	}
 }
 
+@media (max-width: 767px) {
+	.hero-v2 .reveal,
+	#inventory .reveal,
+	.vehicle-detail-page .reveal {
+		opacity: 1;
+		transform: none;
+	}
+
+	.hero-v2 .reveal.in-view,
+	#inventory .reveal.in-view,
+	.vehicle-detail-page .reveal.in-view {
+		animation: none;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
+	.reveal,
+	.map-card-pop {
+		opacity: 1;
+		transform: none;
+	}
+
 	*,
 	*::before,
 	*::after {

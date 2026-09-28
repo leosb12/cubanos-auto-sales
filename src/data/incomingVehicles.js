@@ -67,18 +67,6 @@ export const incomingVehicles = [
     status: 'coming-soon',
   },
   {
-    id: 'incoming-2013-ford-edge',
-    year: 2013,
-    make: 'Ford',
-    model: 'Edge',
-    engine: 'V6',
-    exteriorColor: 'Silver',
-    mileage: 126200,
-    price: 5900,
-    titleStatus: 'Rebuilt Title',
-    status: 'coming-soon',
-  },
-  {
     id: 'incoming-chevrolet-cruze-lt',
     year: null,
     make: 'Chevrolet',
