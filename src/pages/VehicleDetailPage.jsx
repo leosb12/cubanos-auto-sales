@@ -161,7 +161,7 @@ function VehicleDetailPage() {
 
             <p className="text-sm leading-relaxed text-slate-700">{vehicle.description}</p>
 
-            {vehicle.slug !== '2013-ford-edge' && <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+            {vehicle.slug !== '2013-ford-edge' && vehicle.disclosure && <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 rounded-full bg-blue-50 p-2 text-blue-700">
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
@@ -198,8 +198,8 @@ function VehicleDetailPage() {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <a href="tel:+12705991187" className="cta-primary rounded-xl px-4 py-3 text-center text-sm font-bold">Call Sales</a>
-              <a href={requestInfoWhatsAppHref} target="_blank" rel="noreferrer" className="cta-secondary rounded-xl px-4 py-3 text-center text-sm font-bold">Request Info</a>
+              <a href="tel:+12705991187" className="cta-primary rounded-xl px-4 py-3 text-center text-sm font-bold">{vehicle.callCtaLabel || 'Call Sales'}</a>
+              <a href={requestInfoWhatsAppHref} target="_blank" rel="noreferrer" className="cta-secondary rounded-xl px-4 py-3 text-center text-sm font-bold">{vehicle.whatsappCtaLabel || 'Request Info'}</a>
             </div>
 
             {vehicle.cashPriceOnly !== false && <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Cash price only: no hidden fees, no price games.</p>}

@@ -610,7 +610,7 @@ function HomePage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filteredInventory.map((car, index) => (
                 <article key={car.id} className={`reveal card-kinetic cuba-accent-border overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-300/20 ${index % 3 === 1 ? 'reveal-delay-1' : index % 3 === 2 ? 'reveal-delay-2' : ''}`}>
-                  <div className="relative h-44 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white">
+                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white md:h-56">
                     {car.coverImage && (
                       <CachedImage
                         {...getVehicleCardImage(car.coverImage)}
@@ -624,7 +624,7 @@ function HomePage() {
                     )}
                     <div className={car.status === 'available' ? 'absolute inset-0 bg-gradient-to-b from-slate-950/45 via-transparent to-slate-950/60' : 'absolute inset-0 bg-slate-950/40'} aria-hidden="true"></div>
                     <div className="relative z-10 flex items-center justify-between">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-100">{car.title}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-100">{car.title?.toLowerCase().includes('rebuilt') ? 'Rebuilt Title' : car.title}</p>
                       {car.status === 'available' ? (
                         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/70 bg-white/90 px-2 py-1 text-[10px] font-semibold leading-none text-slate-800">
                           <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" aria-hidden="true" />
@@ -634,26 +634,26 @@ function HomePage() {
                     </div>
                     <h3 className={`z-10 text-2xl font-bold leading-tight ${car.status === 'available' ? 'absolute bottom-5 left-5 right-5' : 'relative mt-6'}`}>{car.model}</h3>
                   </div>
-                  <div className="p-5">
-                    <div className="mb-4 flex items-end justify-between">
+                  <div className="p-4">
+                    <div className="mb-2 flex items-end justify-between">
                       <p className="text-sm text-slate-500">{car.status === 'available' ? 'Price' : 'Starting Price'}</p>
                       <p className="text-3xl font-extrabold text-slate-900">{car.price}</p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="grid grid-cols-2 gap-2 text-sm">
                       {car.miles && (
-                        <div className="rounded-lg bg-slate-100 p-3">
+                        <div className="rounded-lg bg-slate-100 px-3 py-2">
                           <p className="text-slate-500">Mileage</p>
                           <p className="font-semibold text-slate-800">{car.miles}</p>
                         </div>
                       )}
                       {car.fuel && (
-                        <div className="rounded-lg bg-slate-100 p-3">
+                        <div className="rounded-lg bg-slate-100 px-3 py-2">
                           <p className="text-slate-500">Fuel Type</p>
                           <p className="font-semibold text-slate-800">{car.fuel}</p>
                         </div>
                       )}
-                      {car.engine && <div className="rounded-lg bg-slate-100 p-3"><p className="text-slate-500">Engine</p><p className="font-semibold text-slate-800">{car.engine}</p></div>}
-                      {car.exteriorColor && <div className="rounded-lg bg-slate-100 p-3"><p className="text-slate-500">Exterior</p><p className="font-semibold text-slate-800">{car.exteriorColor}</p></div>}
+                      {car.engine && <div className="rounded-lg bg-slate-100 px-3 py-2"><p className="text-slate-500">Engine</p><p className="font-semibold text-slate-800">{car.engine}</p></div>}
+                      {car.exteriorColor && <div className="rounded-lg bg-slate-100 px-3 py-2"><p className="text-slate-500">Exterior</p><p className="font-semibold text-slate-800">{car.exteriorColor}</p></div>}
                     </div>
                     {car.slug ? (
                       <Link
@@ -665,12 +665,12 @@ function HomePage() {
                           preloadVehicleGallery(car)
                           sessionStorage.setItem('inventoryScrollY', String(window.scrollY))
                         }}
-                        className="cta-primary mt-5 inline-flex w-full justify-center rounded-xl px-4 py-2.5 text-sm font-bold"
+                        className="cta-primary mt-3 inline-flex w-full justify-center rounded-xl px-4 py-2.5 text-sm font-bold"
                       >
                         View Vehicle Details
                       </Link>
                     ) : (
-                      <button className="cta-primary mt-5 w-full rounded-xl px-4 py-2.5 text-sm font-bold" type="button">
+                      <button className="cta-primary mt-3 w-full rounded-xl px-4 py-2.5 text-sm font-bold" type="button">
                         View Vehicle Details
                       </button>
                     )}

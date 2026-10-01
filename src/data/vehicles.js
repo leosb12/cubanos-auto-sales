@@ -423,5 +423,67 @@ export const fordEdge2013 = {
   cashPriceOnly: false,
 }
 
-export const availableVehicles = [fordEdge2013]
+const charger2022Image = (name) => `/optimized/v1/vehicles/2022-dodge-charger-sxt/${name}-1600.webp`
+
+export const charger2022 = {
+  id: '2022-dodge-charger-sxt',
+  slug: '2022-dodge-charger-sxt',
+  model: '2022 Dodge Charger SXT',
+  status: 'available',
+  price: '$13,800',
+  miles: '82,285 mi',
+  engine: 'V6',
+  exteriorColor: 'Black',
+  interiorColor: 'Black',
+  title: 'Rebuilt Title',
+  coverImage: charger2022Image('hero-front-three-quarter'),
+  coverAlt: '2022 Dodge Charger SXT black exterior front three-quarter view',
+  gallery: [
+    charger2022Image('hero-front-three-quarter'),
+    charger2022Image('front-view'),
+    charger2022Image('driver-side-profile'),
+    charger2022Image('rear-view'),
+    charger2022Image('driver-front-cabin'),
+    charger2022Image('passenger-front-cabin'),
+    charger2022Image('dashboard-and-steering'),
+    charger2022Image('rear-seats'),
+    charger2022Image('trunk'),
+    charger2022Image('backup-camera'),
+    charger2022Image('engine-bay'),
+  ],
+  galleryAlt: [
+    '2022 Dodge Charger SXT black exterior front three-quarter view',
+    '2022 Dodge Charger SXT black exterior front view',
+    '2022 Dodge Charger SXT black exterior driver-side profile',
+    '2022 Dodge Charger SXT black exterior rear view',
+    '2022 Dodge Charger SXT black interior driver seat and cockpit',
+    '2022 Dodge Charger SXT black interior front passenger seat',
+    '2022 Dodge Charger SXT dashboard, steering wheel, and instrument cluster',
+    '2022 Dodge Charger SXT black interior rear seats',
+    '2022 Dodge Charger SXT open trunk',
+    '2022 Dodge Charger SXT backup camera display',
+    '2022 Dodge Charger SXT engine bay',
+  ],
+  description:
+    'This 2022 Dodge Charger SXT comes in black with a black interior and 82,285 actual miles. It features a V6 engine, Bluetooth, a backup camera, bumper sensors, and power seats. The engine and transmission are in excellent mechanical condition, and the vehicle is in very clean shape. This vehicle has a rebuilt title. Call us at 270-599-1187 or message us on WhatsApp for more information.',
+  highlights: [
+    'Bluetooth, backup camera, and bumper sensors',
+    'Power seats and black interior',
+    'Engine and transmission in excellent mechanical condition',
+    'Very clean shape',
+  ],
+  technicalSpecs: [
+    { label: 'Mileage', value: '82,285 actual miles' },
+    { label: 'Engine', value: 'V6' },
+    { label: 'Exterior', value: 'Black' },
+    { label: 'Interior', value: 'Black' },
+    { label: 'Title Status', value: 'Rebuilt Title' },
+  ],
+  inquiryMessage: "I'm interested in the 2022 Dodge Charger SXT.",
+  callCtaLabel: 'Call us',
+  whatsappCtaLabel: 'Message us on WhatsApp',
+  cashPriceOnly: false,
+}
+
+export const availableVehicles = [fordEdge2013, charger2022]
 

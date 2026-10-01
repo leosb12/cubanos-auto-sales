@@ -49,6 +49,11 @@ def main() -> None:
                 for width in (480, 800):
                     save_resized(card, OUTPUT / f"{name}-card-{width}.webp", width, 83)
 
+                # The taller inventory card needs less gravel without losing the roof/wheels.
+                tall_card = image.crop((0, 0, 4032, 2372))
+                for width in (480, 800):
+                    save_resized(tall_card, OUTPUT / f"{name}-card-tall-{width}.webp", width, 83)
+
     print(f"Prepared {len(PHOTOS)} Ford Edge photos in {OUTPUT}")
 
 

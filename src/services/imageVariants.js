@@ -6,16 +6,18 @@ const vehicleImageStem = (src) => {
 }
 
 const preparedImageStem = (src) => {
-  const match = /^\/optimized\/v1\/vehicles\/2013-ford-edge\/([a-z0-9-]+)-1600\.webp$/i.exec(src || '')
-  return match ? `${VEHICLE_IMAGE_ROOT}/2013-ford-edge/${match[1]}` : null
+  const match = /^\/optimized\/v1\/vehicles\/(2013-ford-edge|2022-dodge-charger-sxt)\/([a-z0-9-]+)-1600\.webp$/i.exec(src || '')
+  return match ? `${VEHICLE_IMAGE_ROOT}/${match[1]}/${match[2]}` : null
 }
 
 export const getVehicleCardImage = (src) => {
-  const stem = preparedImageStem(src) || vehicleImageStem(src)
+  const preparedStem = preparedImageStem(src)
+  const stem = preparedStem || vehicleImageStem(src)
+  const cardSuffix = preparedStem ? '-card-tall' : '-card'
   return stem
     ? {
-        src: `${stem}-card-800.webp`,
-        srcSet: `${stem}-card-480.webp 480w, ${stem}-card-800.webp 800w`,
+        src: `${stem}${cardSuffix}-800.webp`,
+        srcSet: `${stem}${cardSuffix}-480.webp 480w, ${stem}${cardSuffix}-800.webp 800w`,
         fallbackSrc: src,
       }
     : { src }
