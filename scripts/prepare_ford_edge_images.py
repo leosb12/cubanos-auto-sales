@@ -1,6 +1,7 @@
 """Prepare the supplied 2013 Ford Edge photos as size-limited WebP assets.
 
-The raw JFIF files remain untouched. Run with: python scripts/prepare_ford_edge_images.py
+Requires local, Git-ignored JFIF files in ``2013 ford edge`` and Pillow.
+The raw files remain untouched. Run: python scripts/prepare_ford_edge_images.py
 """
 
 from pathlib import Path
@@ -44,12 +45,7 @@ def main() -> None:
                 save_resized(image, OUTPUT / f"{name}-{suffix}.webp", width, quality)
 
             if name == "driver-side-profile":
-                # The inventory card is a wide banner; show the entire side of the car.
-                card = image.crop((0, 160, 4032, 1974))
-                for width in (480, 800):
-                    save_resized(card, OUTPUT / f"{name}-card-{width}.webp", width, 83)
-
-                # The taller inventory card needs less gravel without losing the roof/wheels.
+                # The inventory card keeps the roof and wheels without excess gravel.
                 tall_card = image.crop((0, 0, 4032, 2372))
                 for width in (480, 800):
                     save_resized(tall_card, OUTPUT / f"{name}-card-tall-{width}.webp", width, 83)

@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Owner-supplied source photos stay local; production uses optimized WebP assets.
+/2013 ford edge/
+/Dodge charger 2022/
+/raw-vehicle-images/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

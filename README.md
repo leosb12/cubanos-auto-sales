@@ -17,6 +17,6 @@ If you are developing a production application, we recommend using TypeScript wi
 
 ## Image variants
 
-The original vehicle photos and hero PNG remain in `public/`. Smaller WebP files in `public/optimized/v1/` are checked in so the site needs no image processing package at runtime or during Vite builds.
+Production vehicle photos are checked-in WebP files in `public/optimized/v1/vehicles/`. Raw owner photos stay locally in the Git-ignored `2013 ford edge/` and `Dodge charger 2022/` folders. Vite builds do not need the raw files or an image-processing package.
 
-After adding or replacing vehicle photos, run `python scripts/generate_image_variants.py` with Pillow installed. When replacing an image at an existing URL, change the `v1` path in the script, `src/services/imageVariants.js`, `src/App.jsx`, and `index.html` before deployment. This keeps the long-lived Vercel cache from serving an older image.
+To regenerate a live vehicle's variants, install Pillow and run its `scripts/prepare_*_images.py` script with the matching raw folder present. `scripts/generate_image_variants.py` remains available for the global hero image and any future JPG-based inventory. When replacing an image at an existing optimized URL, bump the URL version in the image scripts and site references before deployment so Vercel's immutable cache serves the new image.

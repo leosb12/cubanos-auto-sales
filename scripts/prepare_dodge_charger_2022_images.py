@@ -1,6 +1,7 @@
 """Create responsive WebP assets from the owner-supplied 2022 Charger photos.
 
-The original JPEGs stay in ``Dodge charger 2022`` and are never served by the site.
+Requires local, Git-ignored JPEGs in ``Dodge charger 2022`` and Pillow.
+The original photos are never served by the site.
 Run: python scripts/prepare_dodge_charger_2022_images.py
 """
 
@@ -52,12 +53,7 @@ def main() -> None:
                 save_resized(image, OUTPUT / f"{name}-{label}.webp", width, quality)
 
             if name == "hero-front-three-quarter":
-                # Wide card composition keeps the roof, wheels and front bumper visible.
-                card = oriented.crop((0, 330, 4032, 2160))
-                for width in (480, 800):
-                    save_resized(card, OUTPUT / f"{name}-card-{width}.webp", width, 83)
-
-                # A taller card crop retains the roof, wheels and front bumper.
+                # Card crop retains the roof, wheels and front bumper.
                 tall_card = oriented.crop((0, 200, 4032, 2572))
                 for width in (480, 800):
                     save_resized(tall_card, OUTPUT / f"{name}-card-tall-{width}.webp", width, 83)
