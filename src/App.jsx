@@ -928,6 +928,7 @@ function HomePage() {
               <div className="mt-6 space-y-4 text-slate-700">
                 <p><span className="font-bold text-slate-900">Location:</span> 1054 Old Barren River Rd #7, Bowling Green, KY 42101, United States</p>
                 <p><span className="font-bold text-slate-900">Phone:</span> <a href="tel:+12705991187" className="font-semibold text-blue-700">270-599-1187</a></p>
+                <p><span className="font-bold text-slate-900">Email:</span> <a href="mailto:cubanosauto21@gmail.com" className="break-all font-semibold text-blue-700">cubanosauto21@gmail.com</a></p>
               </div>
 
               <div className="mt-6">
