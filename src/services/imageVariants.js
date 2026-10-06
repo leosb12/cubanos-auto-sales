@@ -6,8 +6,8 @@ const vehicleImageStem = (src) => {
 }
 
 const preparedImageStem = (src) => {
-  const match = /^\/optimized\/v1\/vehicles\/(2013-ford-edge|2022-dodge-charger-sxt)\/([a-z0-9-]+)-1600\.webp$/i.exec(src || '')
-  return match ? `${VEHICLE_IMAGE_ROOT}/${match[1]}/${match[2]}` : null
+  const match = /^\/optimized\/v[12]\/vehicles\/(2013-ford-edge|2022-dodge-charger-sxt|2016-chevrolet-cruze-lt)\/([a-z0-9-]+)-1600\.webp$/i.exec(src || '')
+  return match ? src.replace(/-1600\.webp$/i, '') : null
 }
 
 export const getVehicleCardImage = (src) => {

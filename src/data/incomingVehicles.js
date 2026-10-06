@@ -53,16 +53,4 @@ export const incomingVehicles = [
     titleStatus: 'Rebuilt Title',
     status: 'coming-soon',
   },
-  {
-    id: 'incoming-chevrolet-cruze-lt',
-    year: null,
-    make: 'Chevrolet',
-    model: 'Cruze',
-    trim: 'LT',
-    exteriorColor: 'Black',
-    mileage: 110200,
-    price: 5800,
-    titleStatus: 'Clean Title',
-    status: 'coming-soon',
-  },
 ]

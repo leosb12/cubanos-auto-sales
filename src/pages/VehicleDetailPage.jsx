@@ -7,6 +7,23 @@ import { getVehicleDetailImage, getVehiclePreloadImage, getVehicleThumbnailImage
 
 const vehiclesBySlug = Object.fromEntries(availableVehicles.map((vehicle) => [vehicle.slug, vehicle]))
 
+// Match the reviewed Cruze photo crops so the large image has no letterboxing
+// and the browser does not crop the car to a fixed landscape frame.
+const cruzePhotoAspectRatios = {
+  'black-front-three-quarter': 3024 / 2450,
+  'black-front': 3024 / 2550,
+  'black-driver-side-front-wheel': 4032 / 2150,
+  'black-passenger-side-rear': 4032 / 2300,
+  'black-rear': 3024 / 2700,
+  'black-driver-interior': 3024 / 3900,
+  'black-front-passenger-interior': 3024 / 3650,
+  'dashboard-and-center-console': 4032 / 3024,
+  'black-rear-seats': 3024 / 3350,
+  'backup-camera-display': 3024 / 2900,
+  'open-trunk': 3024 / 3100,
+  'engine-bay': 3024 / 1950,
+}
+
 function VehicleDetailPage() {
   const { slug } = useParams()
   const vehicle = useMemo(() => vehiclesBySlug[slug], [slug])
@@ -22,6 +39,49 @@ function VehicleDetailPage() {
   const activeImageAlt = activeImageIndex >= 0
     ? vehicle?.galleryAlt?.[activeImageIndex] || `${vehicle?.model} photo ${activeImageIndex + 1}`
     : vehicle?.coverAlt || vehicle?.model
+  const cruzePhotoName = vehicle?.slug === '2016-chevrolet-cruze-lt'
+    ? activeImage.split('/').pop().replace(/^2016-chevrolet-cruze-lt-|-1600\.webp$/g, '')
+    : ''
+  const detailImageAspectRatio = cruzePhotoAspectRatios[cruzePhotoName] || 16 / 10
+
+  useEffect(() => {
+    if (!vehicle?.seo) return undefined
+
+    const originalTitle = document.title
+    const canonicalUrl = `https://www.cubanosautosales.com/inventory/${vehicle.slug}`
+    const updates = [
+      ['meta[name="description"]', 'content', vehicle.seo.description],
+      ['link[rel="canonical"]', 'href', canonicalUrl],
+      ['meta[property="og:title"]', 'content', vehicle.seo.title],
+      ['meta[property="og:description"]', 'content', vehicle.seo.description],
+      ['meta[property="og:url"]', 'content', canonicalUrl],
+      ['meta[property="og:image"]', 'content', `https://www.cubanosautosales.com${vehicle.gallery[0]}`],
+      ['meta[property="og:image:secure_url"]', 'content', `https://www.cubanosautosales.com${vehicle.gallery[0]}`],
+      ['meta[property="og:image:type"]', 'content', 'image/webp'],
+      ['meta[property="og:image:width"]', 'content', '1600'],
+      ['meta[property="og:image:height"]', 'content', '1296'],
+      ['meta[property="og:image:alt"]', 'content', vehicle.galleryAlt[0]],
+      ['meta[name="twitter:title"]', 'content', vehicle.seo.title],
+      ['meta[name="twitter:description"]', 'content', vehicle.seo.description],
+      ['meta[name="twitter:image"]', 'content', `https://www.cubanosautosales.com${vehicle.gallery[0]}`],
+    ]
+    const originals = updates.map(([selector, attribute, value]) => {
+      const element = document.querySelector(selector)
+      const previous = element?.getAttribute(attribute)
+      element?.setAttribute(attribute, value)
+      return { element, attribute, previous }
+    })
+    document.title = vehicle.seo.title
+
+    // Restore the existing site metadata on navigation to inventory/other cars.
+    return () => {
+      document.title = originalTitle
+      originals.forEach(({ element, attribute, previous }) => {
+        if (previous === null) element?.removeAttribute(attribute)
+        else if (previous !== undefined) element?.setAttribute(attribute, previous)
+      })
+    }
+  }, [vehicle])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' })
@@ -100,11 +160,12 @@ function VehicleDetailPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="reveal">
-            <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-xl shadow-slate-400/20">
-              <div className="aspect-[16/10] bg-slate-900">
+            <div className="overflow-hidden rounded-2xl bg-transparent shadow-none">
+              <div className="bg-transparent" style={{ aspectRatio: detailImageAspectRatio }}>
                 <CachedImage
                   {...getVehicleDetailImage(activeImage)}
                   alt={activeImageAlt}
+                  objectFit={vehicle.detailImageFit}
                   className="h-full w-full"
                   imgClassName={`h-full w-full ${vehicle.status === 'available' ? 'object-contain' : 'object-cover'}`}
                   loading="eager"
@@ -124,14 +185,14 @@ function VehicleDetailPage() {
                   onMouseEnter={() => preloadImages([getVehiclePreloadImage(image)], { idle: false })}
                   onFocus={() => preloadImages([getVehiclePreloadImage(image)], { idle: false })}
                   onTouchStart={() => preloadImages([getVehiclePreloadImage(image)], { idle: false })}
-                  className={`overflow-hidden rounded-lg border ${activeImage === image ? 'border-blue-700' : 'border-slate-300'} bg-white`}
+                  className={`vehicle-gallery-thumbnail overflow-hidden rounded-lg border ${activeImage === image ? 'border-blue-700 outline-2 outline-blue-700 outline-offset-[-2px]' : 'border-gray-200'} bg-transparent p-0 shadow-none`}
                   aria-label={`View ${vehicle.galleryAlt?.[idx] || `image ${idx + 1}`}`}
                   aria-pressed={activeImage === image}
                 >
                   <CachedImage
                     {...getVehicleThumbnailImage(image)}
                     alt={vehicle.galleryAlt?.[idx] || `${vehicle.model} photo ${idx + 1}`}
-                    className="aspect-[4/3] w-full"
+                    className={`${vehicle.slug === '2016-chevrolet-cruze-lt' ? 'aspect-square' : 'aspect-[4/3]'} w-full`}
                     imgClassName="h-full w-full object-cover"
                     loading="lazy"
                     decoding="async"

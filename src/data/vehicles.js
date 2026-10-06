@@ -116,5 +116,83 @@ export const charger2022 = {
   cashPriceOnly: false,
 }
 
-export const availableVehicles = [fordEdge2013, charger2022]
+const cruze2016Image = (name) => `/optimized/v2/vehicles/2016-chevrolet-cruze-lt/2016-chevrolet-cruze-lt-${name}-1600.webp`
+
+export const cruze2016 = {
+  id: '2016-chevrolet-cruze-lt',
+  slug: '2016-chevrolet-cruze-lt',
+  model: '2016 Chevrolet Cruze LT',
+  status: 'available',
+  price: '$5,800',
+  miles: '110,100 mi',
+  // Latest owner-supplied specification, not independently verified in photos.
+  engine: '1.8L Turbo',
+  engineVerified: false,
+  // Photo odometer reads 110,483 mi. Publication follows the owner's explicit
+  // latest 110,100 actual miles instruction; retain the discrepancy for review.
+  exteriorColor: 'Black',
+  interiorColor: 'Black',
+  title: 'Clean Title',
+  transmission: 'Automatic',
+  fuel: 'Gasoline',
+  coverImage: cruze2016Image('black-front-three-quarter'),
+  coverAlt: '2016 Chevrolet Cruze LT black exterior front three-quarter view',
+  gallery: [
+    cruze2016Image('black-front-three-quarter'),
+    cruze2016Image('black-front'),
+    cruze2016Image('black-driver-side-front-wheel'),
+    cruze2016Image('black-passenger-side-rear'),
+    cruze2016Image('black-rear'),
+    cruze2016Image('black-driver-interior'),
+    cruze2016Image('black-front-passenger-interior'),
+    cruze2016Image('dashboard-and-center-console'),
+    cruze2016Image('black-rear-seats'),
+    cruze2016Image('backup-camera-display'),
+    cruze2016Image('open-trunk'),
+    cruze2016Image('engine-bay'),
+  ],
+  galleryAlt: [
+    '2016 Chevrolet Cruze LT black exterior front three-quarter view',
+    '2016 Chevrolet Cruze LT black exterior front view',
+    '2016 Chevrolet Cruze LT black driver-side front body and wheel close-up',
+    '2016 Chevrolet Cruze LT black passenger-side rear body and wheel close-up',
+    '2016 Chevrolet Cruze LT black exterior rear view with LT badge',
+    '2016 Chevrolet Cruze LT black driver seat, steering wheel, and cockpit',
+    '2016 Chevrolet Cruze LT black front passenger seat and cabin',
+    '2016 Chevrolet Cruze LT dashboard, instrument cluster, and center console',
+    '2016 Chevrolet Cruze LT black interior rear seats',
+    '2016 Chevrolet Cruze LT backup camera display and center controls',
+    '2016 Chevrolet Cruze LT open trunk and cargo space',
+    '2016 Chevrolet Cruze LT engine bay',
+  ],
+  description:
+    'This 2016 Chevrolet Cruze LT comes in black with a black interior and 110,100 actual miles. It is in excellent condition and drives very well, with no reported engine or transmission issues. Features include a backup camera and Bluetooth. This vehicle has a clean title. Contact us for more information.',
+  highlights: [
+    'Backup camera and Bluetooth',
+    'Black exterior and black interior',
+    'Excellent condition and drives very well',
+    'No reported engine or transmission issues',
+  ],
+  technicalSpecs: [
+    { label: 'Mileage', value: '110,100 mi' },
+    { label: 'Transmission', value: 'Automatic' },
+    { label: 'Fuel Type', value: 'Gasoline' },
+    { label: 'Trim', value: 'LT Sedan 4D' },
+    { label: 'Seats', value: '5' },
+    { label: 'Owners', value: '1' },
+    { label: 'City MPG', value: '30.0' },
+    { label: 'Highway MPG', value: '42.0' },
+    { label: 'Combined MPG', value: '35.0' },
+  ],
+  seo: {
+    title: '2016 Chevrolet Cruze LT for Sale in Bowling Green, KY | Cubanos Auto Sales',
+    description: '2016 Chevrolet Cruze LT for sale at Cubanos Auto Sales & Repair LLC in Bowling Green, KY. $5,800, 110,100 miles, black exterior, black interior and clean title.',
+  },
+  inquiryMessage: "I'm interested in the 2016 Chevrolet Cruze LT.",
+  callCtaLabel: 'Call us',
+  whatsappCtaLabel: 'Message us on WhatsApp',
+  cashPriceOnly: false,
+}
+
+export const availableVehicles = [fordEdge2013, charger2022, cruze2016]
 

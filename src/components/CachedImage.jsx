@@ -28,6 +28,7 @@ function CachedImage({
   fallbackSrc = DEFAULT_FALLBACK_IMAGE,
   className = '',
   imgClassName = '',
+  objectFit,
   skeletonClassName = '',
   loading = 'lazy',
   decoding = 'async',
@@ -86,6 +87,7 @@ function CachedImage({
             srcSet={visualState.isFallback ? undefined : srcSet}
             sizes={sizes}
             alt={resolvedAlt}
+            style={objectFit ? { objectFit } : undefined}
             className={joinClasses(
               'cached-image__media',
               isUnavailable && 'cached-image__media--fallback',

@@ -615,6 +615,7 @@ function HomePage() {
                       <CachedImage
                         {...getVehicleCardImage(car.coverImage)}
                         alt={car.coverAlt || `${car.model} exterior`}
+                        objectFit={car.cardImageFit}
                         className="absolute inset-0"
                         imgClassName="h-full w-full object-cover"
                         loading="lazy"
@@ -652,7 +653,7 @@ function HomePage() {
                           <p className="font-semibold text-slate-800">{car.fuel}</p>
                         </div>
                       )}
-                      {car.engine && <div className="rounded-lg bg-slate-100 px-3 py-2"><p className="text-slate-500">Engine</p><p className="font-semibold text-slate-800">{car.engine}</p></div>}
+                      {car.engine && car.engineVerified !== false && <div className="rounded-lg bg-slate-100 px-3 py-2"><p className="text-slate-500">Engine</p><p className="font-semibold text-slate-800">{car.engine}</p></div>}
                       {car.exteriorColor && <div className="rounded-lg bg-slate-100 px-3 py-2"><p className="text-slate-500">Exterior</p><p className="font-semibold text-slate-800">{car.exteriorColor}</p></div>}
                     </div>
                     {car.slug ? (
