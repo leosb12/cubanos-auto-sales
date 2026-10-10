@@ -610,7 +610,7 @@ function HomePage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filteredInventory.map((car, index) => (
                 <article key={car.id} className={`reveal card-kinetic cuba-accent-border overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-300/20 ${index % 3 === 1 ? 'reveal-delay-1' : index % 3 === 2 ? 'reveal-delay-2' : ''}`}>
-                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white md:h-56">
+                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 p-5 text-white md:h-56" style={car.cardAspectRatio ? { height: 'auto', aspectRatio: car.cardAspectRatio } : undefined}>
                     {car.coverImage && (
                       <CachedImage
                         {...getVehicleCardImage(car.coverImage)}

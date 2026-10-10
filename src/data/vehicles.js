@@ -194,5 +194,82 @@ export const cruze2016 = {
   cashPriceOnly: false,
 }
 
-export const availableVehicles = [fordEdge2013, charger2022, cruze2016]
+const charger2023Image = (name) => `/optimized/v1/vehicles/2023-dodge-charger-sxt/2023-dodge-charger-sxt-${name}-1600.webp`
+
+export const charger2023 = {
+  id: '2023-dodge-charger-sxt',
+  slug: '2023-dodge-charger-sxt',
+  model: '2023 Dodge Charger SXT',
+  status: 'available',
+  price: '$13,500',
+  miles: '65,595 mi',
+  engine: '3.6L',
+  exteriorColor: 'Gray',
+  interiorColor: 'Black',
+  title: 'Rebuilt Title',
+  coverImage: charger2023Image('gray-front'),
+  coverAlt: '2023 Dodge Charger SXT gray exterior front view',
+  cardAspectRatio: 4032 / 2580,
+  gallery: [
+    charger2023Image('gray-front'),
+    charger2023Image('gray-driver-side-front-wheel'),
+    charger2023Image('gray-driver-side-rear-body'),
+    charger2023Image('gray-passenger-side-front'),
+    charger2023Image('gray-passenger-side-rear-body'),
+    charger2023Image('gray-rear'),
+    charger2023Image('black-driver-interior'),
+    charger2023Image('black-front-passenger-interior'),
+    charger2023Image('black-rear-seats'),
+    charger2023Image('radio-and-center-console'),
+    charger2023Image('open-trunk'),
+    charger2023Image('engine-bay'),
+  ],
+  galleryAlt: [
+    '2023 Dodge Charger SXT gray exterior front view',
+    '2023 Dodge Charger SXT gray driver-side front body and wheel',
+    '2023 Dodge Charger SXT gray driver-side doors, rear body, and wheel',
+    '2023 Dodge Charger SXT gray passenger-side front body and wheel',
+    '2023 Dodge Charger SXT gray passenger-side rear body and wheel',
+    '2023 Dodge Charger SXT gray rear view with bumper sensors',
+    '2023 Dodge Charger SXT black driver seat, dashboard, and center console',
+    '2023 Dodge Charger SXT black front passenger seat and cabin',
+    '2023 Dodge Charger SXT black rear seats and rear cabin vents',
+    '2023 Dodge Charger SXT radio display and center console controls',
+    '2023 Dodge Charger SXT open trunk and cargo space',
+    '2023 Dodge Charger SXT 3.6L engine bay',
+  ],
+  // Match the reviewed crops without padding or forcing portrait cabin photos
+  // into a landscape frame. Keep these in gallery order with the source script.
+  galleryAspectRatios: [
+    4032 / 2650, 4032 / 2140, 4032 / 2230, 4032 / 2600,
+    4032 / 2380, 3024 / 2800, 3024 / 3850, 3024 / 3200,
+    3024 / 2850, 3024 / 3350, 3024 / 2700, 4032 / 2374,
+  ],
+  description:
+    'This 2023 Dodge Charger SXT comes in gray with a black interior and 65,595 actual miles. It has a rebuilt title and a 3.6L engine. It drives very well, and everything works perfectly. Features include a backup camera, Bluetooth radio, full power options, and bumper sensors. Contact us for more information.',
+  highlights: [
+    'Backup camera and Bluetooth radio',
+    'Full power options and bumper sensors',
+    'Drives very well; everything works perfectly',
+  ],
+  technicalSpecs: [
+    { label: 'Mileage', value: '65,595 actual miles' },
+    { label: 'Engine', value: '3.6L' },
+    { label: 'Exterior', value: 'Gray' },
+    { label: 'Interior', value: 'Black' },
+    { label: 'Title Status', value: 'Rebuilt Title' },
+  ],
+  seo: {
+    title: '2023 Dodge Charger SXT for Sale in Bowling Green, KY | Cubanos Auto Sales',
+    description: '2023 Dodge Charger SXT for sale at Cubanos Auto Sales & Repair LLC in Bowling Green, KY. $13,500, 65,595 actual miles, gray exterior, black interior and rebuilt title.',
+    imageWidth: 1600,
+    imageHeight: 1052,
+  },
+  inquiryMessage: "I'm interested in the 2023 Dodge Charger SXT.",
+  callCtaLabel: 'Call us',
+  whatsappCtaLabel: 'Message us on WhatsApp',
+  cashPriceOnly: false,
+}
+
+export const availableVehicles = [fordEdge2013, charger2022, cruze2016, charger2023]
 

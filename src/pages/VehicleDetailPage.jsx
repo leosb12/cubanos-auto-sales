@@ -42,7 +42,7 @@ function VehicleDetailPage() {
   const cruzePhotoName = vehicle?.slug === '2016-chevrolet-cruze-lt'
     ? activeImage.split('/').pop().replace(/^2016-chevrolet-cruze-lt-|-1600\.webp$/g, '')
     : ''
-  const detailImageAspectRatio = cruzePhotoAspectRatios[cruzePhotoName] || 16 / 10
+  const detailImageAspectRatio = vehicle?.galleryAspectRatios?.[activeImageIndex] || cruzePhotoAspectRatios[cruzePhotoName] || 16 / 10
 
   useEffect(() => {
     if (!vehicle?.seo) return undefined
@@ -58,8 +58,8 @@ function VehicleDetailPage() {
       ['meta[property="og:image"]', 'content', `https://www.cubanosautosales.com${vehicle.gallery[0]}`],
       ['meta[property="og:image:secure_url"]', 'content', `https://www.cubanosautosales.com${vehicle.gallery[0]}`],
       ['meta[property="og:image:type"]', 'content', 'image/webp'],
-      ['meta[property="og:image:width"]', 'content', '1600'],
-      ['meta[property="og:image:height"]', 'content', '1296'],
+      ['meta[property="og:image:width"]', 'content', String(vehicle.seo.imageWidth || 1600)],
+      ['meta[property="og:image:height"]', 'content', String(vehicle.seo.imageHeight || 1296)],
       ['meta[property="og:image:alt"]', 'content', vehicle.galleryAlt[0]],
       ['meta[name="twitter:title"]', 'content', vehicle.seo.title],
       ['meta[name="twitter:description"]', 'content', vehicle.seo.description],

@@ -2,19 +2,6 @@
 // Only confirmed details belong here; null year means no model year was provided.
 export const incomingVehicles = [
   {
-    id: 'incoming-2023-dodge-charger-sxt',
-    year: 2023,
-    make: 'Dodge',
-    model: 'Charger',
-    trim: 'SXT',
-    engine: 'V6',
-    exteriorColor: 'Gray',
-    mileage: 65591,
-    price: 14500,
-    titleStatus: 'Rebuilt Title',
-    status: 'coming-soon',
-  },
-  {
     id: 'incoming-2018-dodge-charger-rt',
     year: 2018,
     make: 'Dodge',
